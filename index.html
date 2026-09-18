@@ -125,7 +125,7 @@
       z-index: 1;
     }
 
-    .timeline-item {
+    .timeline-group {
       display: grid;
       grid-template-columns: 100px 1fr;
       gap: 2rem;
@@ -140,6 +140,12 @@
       font-weight: 600;
       color: var(--stripe-text-muted);
       padding-top: 0.75rem;
+    }
+
+    .tiles-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
 
     .tile-content {
@@ -194,7 +200,7 @@
       transition: transform 0.2s ease;
     }
 
-    .timeline-item.open .expand-btn {
+    .tile-content.open .expand-btn {
       transform: rotate(180deg);
       color: var(--stripe-accent);
     }
@@ -208,7 +214,7 @@
       color: var(--stripe-text-muted);
     }
 
-    .timeline-item.open .tile-details {
+    .tile-content.open .tile-details {
       display: block;
     }
 
@@ -276,7 +282,7 @@
     @media (max-width: 768px) {
       .main-container { grid-template-columns: 1fr; }
       .changelog-feed::before { left: 0; }
-      .timeline-item { grid-template-columns: 1fr; gap: 0.5rem; }
+      .timeline-group { grid-template-columns: 1fr; gap: 0.5rem; }
       .timeline-date { text-align: left; padding-top: 0; }
     }
   </style>
@@ -402,19 +408,38 @@
         return;
       }
 
-      feed.innerHTML = '';
-
+      // Group issues by exact date string
+      const groupedByDate = {};
       filtered.forEach(issue => {
         const dateObj = new Date(issue.closedAt);
-        const dateLabel = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
+        const dateKey = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        if (!groupedByDate[dateKey]) {
+          groupedByDate[dateKey] = [];
+        }
+        groupedByDate[dateKey].push(issue);
+      });
 
-        const item = document.createElement('div');
-        item.className = 'timeline-item';
+      feed.innerHTML = '';
 
-        item.innerHTML = `
-          <div class="timeline-date">${dateLabel}</div>
-          <div class="tile-content">
+      // Render timeline groups (one date label per group)
+      Object.keys(groupedByDate).forEach(dateLabel => {
+        const groupEl = document.createElement('div');
+        groupEl.className = 'timeline-group';
+
+        const dateEl = document.createElement('div');
+        dateEl.className = 'timeline-date';
+        dateEl.textContent = dateLabel;
+
+        const stackEl = document.createElement('div');
+        stackEl.className = 'tiles-stack';
+
+        groupedByDate[dateLabel].forEach(issue => {
+          const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
+
+          const tileEl = document.createElement('div');
+          tileEl.className = 'tile-content';
+
+          tileEl.innerHTML = `
             <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
               <div>
                 <span class="badge">${escapeHtml(issue.category)}</span>
@@ -431,17 +456,21 @@
                 ${formatMarkdown(issue.resolutionText)}
               </div>
             ` : ''}
-          </div>
-        `;
+          `;
 
-        if (hasDetails) {
-          const summaryEl = item.querySelector('.tile-summary');
-          summaryEl.addEventListener('click', () => {
-            item.classList.toggle('open');
-          });
-        }
+          if (hasDetails) {
+            const summaryEl = tileEl.querySelector('.tile-summary');
+            summaryEl.addEventListener('click', () => {
+              tileEl.classList.toggle('open');
+            });
+          }
 
-        feed.appendChild(item);
+          stackEl.appendChild(tileEl);
+        });
+
+        groupEl.appendChild(dateEl);
+        groupEl.appendChild(stackEl);
+        feed.appendChild(groupEl);
       });
     }
 
