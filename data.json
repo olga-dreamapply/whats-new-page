@@ -4,13 +4,13 @@
     "title": "New feature is available",
     "closedAt": "2026-09-18T10:59:14Z",
     "category": "UX",
-    "resolutionText": ""
+    "resolutionText": "A requested feature has been imlemented today."
   },
   {
     "id": 1,
     "title": "The initial product release is now available!",
     "closedAt": "2026-09-18T08:16:24Z",
     "category": "API",
-    "resolutionText": ""
+    "resolutionText": "Here is a brief description of the new feature and how to use it.\n\n![Feature Screenshot](https://help.dreamapply.com/kb/get-started/images/select-offers.png)"
   }
 ]
