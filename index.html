@@ -317,10 +317,6 @@
       <div class="filter-title">Categories</div>
       <div class="filter-list" id="category-filters">
         <button class="filter-btn active" data-category="All">All Updates</button>
-        <button class="filter-btn" data-category="Features">Features</button>
-        <button class="filter-btn" data-category="Enhancements">Enhancements</button>
-        <button class="filter-btn" data-category="Bug fix">Bug fix</button>
-        <button class="filter-btn" data-category="UX/UI">UX/UI</button>
       </div>
     </aside>
 
@@ -333,7 +329,6 @@
 
     async function init() {
       setupYearSwitcher();
-      setupCategoryFilters();
       await fetchChangelog();
     }
 
@@ -355,9 +350,31 @@
       }
     }
 
-    function setupCategoryFilters() {
+    function generateCategoryFilters() {
       const container = document.getElementById('category-filters');
-      container.addEventListener('click', (e) => {
+      
+      // Collect unique categories present across all issues
+      const categoriesSet = new Set();
+      allIssues.forEach(issue => {
+        if (issue.category && issue.category.trim()) {
+          categoriesSet.add(issue.category.trim());
+        }
+      });
+
+      // Sort category names alphabetically
+      const sortedCategories = Array.from(categoriesSet).sort((a, b) => a.localeCompare(b));
+
+      // Build filter buttons HTML
+      let html = `<button class="filter-btn ${selectedCategory === 'All' ? 'active' : ''}" data-category="All">All Updates</button>`;
+      sortedCategories.forEach(cat => {
+        const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
+        html += `<button class="filter-btn ${isActive ? 'active' : ''}" data-category="${escapeHtml(cat)}">${escapeHtml(cat)}</button>`;
+      });
+
+      container.innerHTML = html;
+
+      // Event listener delegation
+      container.onclick = (e) => {
         const btn = e.target.closest('.filter-btn');
         if (!btn) return;
 
@@ -365,7 +382,7 @@
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         renderFeed();
-      });
+      };
     }
 
     async function fetchChangelog() {
@@ -374,6 +391,7 @@
         if (!res.ok) throw new Error("Unable to load data.json");
         allIssues = await res.json();
         
+        generateCategoryFilters();
         updateStats();
         renderFeed();
       } catch (e) {
@@ -397,7 +415,7 @@
     function renderFeed() {
       const feed = document.getElementById('changelog-feed');
       
-      // Normalized Category Comparison
+      // Filter by Year and Category
       const filtered = allIssues.filter(issue => {
         const issueYear = new Date(issue.closedAt).getFullYear();
         const matchesYear = issueYear === selectedYear;
@@ -439,7 +457,12 @@
         const stackEl = document.createElement('div');
         stackEl.className = 'tiles-stack';
 
-        groupedByDate[dateLabel].forEach(issue => {
+        // Sort tiles within the same date block by Category Name
+        const dateIssues = groupedByDate[dateLabel].sort((a, b) => 
+          (a.category || "").localeCompare(b.category || "")
+        );
+
+        dateIssues.forEach(issue => {
           const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
 
           const tileEl = document.createElement('div');
