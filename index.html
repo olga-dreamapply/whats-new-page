@@ -172,6 +172,13 @@
       cursor: pointer;
     }
 
+    .badge-container {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+
     .badge {
       display: inline-block;
       font-size: 0.75rem;
@@ -179,7 +186,6 @@
       padding: 0.2rem 0.6rem;
       border-radius: 12px;
       text-transform: uppercase;
-      margin-bottom: 0.5rem;
       background: #eef2ff;
       color: var(--stripe-accent);
     }
@@ -352,19 +358,20 @@
 
     function generateCategoryFilters() {
       const container = document.getElementById('category-filters');
-      
-      // Collect unique categories present across all issues
       const categoriesSet = new Set();
+
+      // Collect categories across ALL issues regardless of selected year
       allIssues.forEach(issue => {
-        if (issue.category && issue.category.trim()) {
-          categoriesSet.add(issue.category.trim());
+        if (issue.categories && Array.isArray(issue.categories)) {
+          issue.categories.forEach(c => categoriesSet.add(c.trim()));
+        } else if (issue.category && issue.category.trim()) {
+          // Fallback for single string categories
+          issue.category.split(',').forEach(c => categoriesSet.add(c.trim()));
         }
       });
 
-      // Sort category names alphabetically
       const sortedCategories = Array.from(categoriesSet).sort((a, b) => a.localeCompare(b));
 
-      // Build filter buttons HTML
       let html = `<button class="filter-btn ${selectedCategory === 'All' ? 'active' : ''}" data-category="All">All Updates</button>`;
       sortedCategories.forEach(cat => {
         const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
@@ -373,7 +380,6 @@
 
       container.innerHTML = html;
 
-      // Event listener delegation
       container.onclick = (e) => {
         const btn = e.target.closest('.filter-btn');
         if (!btn) return;
@@ -412,18 +418,27 @@
       document.getElementById('issues-count').textContent = monthCount;
     }
 
+    function getIssueCategories(issue) {
+      if (issue.categories && Array.isArray(issue.categories)) {
+        return issue.categories;
+      }
+      if (issue.category) {
+        return issue.category.split(',').map(c => c.trim());
+      }
+      return ["General"];
+    }
+
     function renderFeed() {
       const feed = document.getElementById('changelog-feed');
       
-      // Filter by Year and Category
       const filtered = allIssues.filter(issue => {
         const issueYear = new Date(issue.closedAt).getFullYear();
         const matchesYear = issueYear === selectedYear;
 
-        const issueCat = (issue.category || "").trim().toLowerCase();
+        const issueCats = getIssueCategories(issue).map(c => c.toLowerCase());
         const targetCat = selectedCategory.trim().toLowerCase();
 
-        const matchesCategory = targetCat === "all" || issueCat === targetCat;
+        const matchesCategory = targetCat === "all" || issueCats.includes(targetCat);
         return matchesYear && matchesCategory;
       });
 
@@ -432,7 +447,6 @@
         return;
       }
 
-      // Group issues by exact date string
       const groupedByDate = {};
       filtered.forEach(issue => {
         const dateObj = new Date(issue.closedAt);
@@ -445,7 +459,6 @@
 
       feed.innerHTML = '';
 
-      // Render timeline groups
       Object.keys(groupedByDate).forEach(dateLabel => {
         const groupEl = document.createElement('div');
         groupEl.className = 'timeline-group';
@@ -457,13 +470,11 @@
         const stackEl = document.createElement('div');
         stackEl.className = 'tiles-stack';
 
-        // Sort tiles within the same date block by Category Name
-        const dateIssues = groupedByDate[dateLabel].sort((a, b) => 
-          (a.category || "").localeCompare(b.category || "")
-        );
-
-        dateIssues.forEach(issue => {
+        groupedByDate[dateLabel].forEach(issue => {
           const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
+          const cats = getIssueCategories(issue);
+
+          const badgesHtml = cats.map(c => `<span class="badge">${escapeHtml(c)}</span>`).join('');
 
           const tileEl = document.createElement('div');
           tileEl.className = 'tile-content';
@@ -471,7 +482,7 @@
           tileEl.innerHTML = `
             <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
               <div>
-                <span class="badge">${escapeHtml(issue.category)}</span>
+                <div class="badge-container">${badgesHtml}</div>
                 <h3 class="issue-title">${escapeHtml(issue.title)}</h3>
               </div>
               ${hasDetails ? `
@@ -511,7 +522,6 @@
       if (!text) return '';
       let html = escapeHtml(text);
 
-      // Markdown parsing
       html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
       html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
       html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
