@@ -9,156 +9,275 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --da-navy: #0e1e38;
-      --da-blue: #0084ff;
-      --da-bg: #f4f6f9;
-      --da-card-bg: #ffffff;
-      --da-text-main: #1d2939;
-      --da-text-muted: #667085;
-      --da-border: #eaecf0;
+      --stripe-bg: #f8f9fa;
+      --stripe-card: #ffffff;
+      --stripe-text-main: #0a2540;
+      --stripe-text-muted: #425466;
+      --stripe-accent: #635bff;
+      --stripe-border: #e6e8eb;
     }
 
     * { box-sizing: border-box; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--da-bg);
-      color: var(--da-text-main);
+      background-color: var(--stripe-bg);
+      color: var(--stripe-text-main);
       margin: 0;
       padding: 0;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
+    /* Header */
     header {
-      background-color: var(--da-navy);
-      color: #ffffff;
-      padding: 3rem 1.5rem;
-      text-align: center;
+      background: var(--stripe-card);
+      border-bottom: 1px solid var(--stripe-border);
+      padding: 3rem 1.5rem 2rem;
     }
 
     .header-content {
-      max-width: 800px;
+      max-width: 1080px;
       margin: 0 auto;
     }
 
     h1 {
-      font-size: 2.25rem;
+      font-size: 2.5rem;
       font-weight: 700;
       margin: 0 0 0.5rem 0;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.03em;
     }
 
     .subtitle {
-      font-size: 1.1rem;
-      color: #d0d5dd;
-      margin: 0;
+      font-size: 1.15rem;
+      color: var(--stripe-text-muted);
+      margin: 0 0 1.5rem 0;
     }
 
-    main {
-      max-width: 800px;
-      margin: -1.5rem auto 3rem auto;
-      padding: 0 1rem;
-    }
-
-    .date-group {
-      margin-bottom: 2.5rem;
-    }
-
-    h2.date-header {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--da-navy);
-      border-bottom: 2px solid var(--da-border);
-      padding-bottom: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-
-    h3.category-header {
-      font-size: 1rem;
+    /* Stats Banner */
+    .stats-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #f0f3ff;
+      border: 1px solid #d0d7ff;
+      padding: 0.6rem 1.25rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: var(--stripe-accent);
       font-weight: 600;
-      color: var(--da-blue);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin: 1.25rem 0 0.75rem 0;
     }
 
-    .issue-tile {
-      background: var(--da-card-bg);
-      border: 1px solid var(--da-border);
-      border-radius: 8px;
-      margin-bottom: 0.75rem;
-      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    /* Controls Bar: Year Switcher */
+    .controls-bar {
+      max-width: 1080px;
+      margin: 2rem auto 0;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .year-btn {
+      background: transparent;
+      border: 1px solid var(--stripe-border);
+      padding: 0.4rem 1rem;
+      border-radius: 16px;
+      font-weight: 500;
+      color: var(--stripe-text-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .year-btn:hover {
+      border-color: var(--stripe-accent);
+      color: var(--stripe-accent);
+    }
+
+    .year-btn.active {
+      background: var(--stripe-accent);
+      color: #ffffff;
+      border-color: var(--stripe-accent);
+    }
+
+    /* Layout Grid */
+    .main-container {
+      max-width: 1080px;
+      margin: 2rem auto 4rem;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 240px;
+      gap: 3rem;
+    }
+
+    /* Content Feed & Timeline */
+    .changelog-feed {
+      position: relative;
+    }
+
+    .changelog-feed::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 110px;
+      width: 2px;
+      background: var(--stripe-border);
+      z-index: 1;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .timeline-date {
+      text-align: right;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--stripe-text-muted);
+      padding-top: 0.75rem;
+    }
+
+    .tile-content {
+      background: var(--stripe-card);
+      border: 1px solid var(--stripe-border);
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
       overflow: hidden;
-      transition: border-color 0.2s ease;
+      transition: box-shadow 0.2s ease;
     }
 
-    .issue-tile:hover {
-      border-color: #b2ddff;
+    .tile-content:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .tile-summary {
-      padding: 1rem 1.25rem;
+      padding: 1.25rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: default;
     }
 
     .tile-summary.expandable {
       cursor: pointer;
     }
 
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      background: #eef2ff;
+      color: var(--stripe-accent);
+    }
+
     .issue-title {
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--da-text-main);
+      font-size: 1.1rem;
+      font-weight: 600;
       margin: 0;
     }
 
     .expand-btn {
       background: none;
       border: none;
-      color: var(--da-text-muted);
+      color: var(--stripe-text-muted);
       cursor: pointer;
-      padding: 0.25rem;
       display: flex;
       align-items: center;
-      transition: transform 0.2s ease, color 0.2s ease;
+      transition: transform 0.2s ease;
     }
 
-    .issue-tile.open .expand-btn {
+    .timeline-item.open .expand-btn {
       transform: rotate(180deg);
-      color: var(--da-blue);
+      color: var(--stripe-accent);
     }
 
     .tile-details {
       display: none;
-      padding: 0 1.25rem 1.25rem 1.25rem;
-      border-top: 1px solid var(--da-border);
-      background-color: #fafafa;
-      color: #344054;
+      padding: 0 1.5rem 1.5rem;
+      border-top: 1px solid var(--stripe-border);
+      background: #fafbfc;
       font-size: 0.95rem;
+      color: var(--stripe-text-muted);
     }
 
-    .issue-tile.open .tile-details {
+    .timeline-item.open .tile-details {
       display: block;
     }
 
     .tile-details img {
       max-width: 100%;
-      height: auto;
+      border-radius: 8px;
+      margin-top: 1rem;
+      border: 1px solid var(--stripe-border);
+    }
+
+    /* Sidebar Filters */
+    .sidebar {
+      position: sticky;
+      top: 2rem;
+      height: fit-content;
+    }
+
+    .filter-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--stripe-text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .filter-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: none;
+      text-align: left;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--stripe-text-muted);
+      cursor: pointer;
+      padding: 0.4rem 0.6rem;
       border-radius: 6px;
-      margin-top: 0.75rem;
-      border: 1px solid var(--da-border);
+      transition: background 0.2s ease;
+    }
+
+    .filter-btn:hover {
+      background: var(--stripe-border);
+    }
+
+    .filter-btn.active {
+      color: var(--stripe-accent);
+      background: #eef2ff;
+      font-weight: 600;
     }
 
     .no-updates {
       text-align: center;
-      padding: 3rem 1rem;
-      background: #ffffff;
-      border-radius: 8px;
-      border: 1px solid var(--da-border);
-      color: var(--da-text-muted);
+      padding: 4rem 1rem;
+      background: var(--stripe-card);
+      border-radius: 10px;
+      border: 1px solid var(--stripe-border);
+      color: var(--stripe-text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .main-container { grid-template-columns: 1fr; }
+      .changelog-feed::before { left: 0; }
+      .timeline-item { grid-template-columns: 1fr; gap: 0.5rem; }
+      .timeline-date { text-align: left; padding-top: 0; }
     }
   </style>
 </head>
@@ -167,110 +286,163 @@
   <header>
     <div class="header-content">
       <h1>What's new in DreamApply</h1>
-      <p class="subtitle">Check out the product improvements, feature updates and bug fixes.</p>
+      <p class="subtitle">A complete log of product improvements, features, and bug fixes.</p>
+      
+      <!-- Stats Block -->
+      <div class="stats-card">
+        <span id="issues-count">0</span> issues resolved this month
+      </div>
     </div>
   </header>
 
-  <main id="app">
-    <div class="no-updates">Loading updates...</div>
-  </main>
+  <!-- Year Switcher Bar -->
+  <div class="controls-bar" id="year-switcher"></div>
+
+  <!-- Layout Grid -->
+  <div class="main-container">
+    
+    <!-- Timeline Feed -->
+    <div class="changelog-feed" id="changelog-feed">
+      <div class="no-updates">Loading changelog...</div>
+    </div>
+
+    <!-- Category Filters Sidebar -->
+    <aside class="sidebar">
+      <div class="filter-title">Categories</div>
+      <div class="filter-list" id="category-filters">
+        <button class="filter-btn active" data-category="All">All Updates</button>
+        <button class="filter-btn" data-category="Features">Features</button>
+        <button class="filter-btn" data-category="Enhancements">Enhancements</button>
+        <button class="filter-btn" data-category="Bug fix">Bug fix</button>
+        <button class="filter-btn" data-category="UX/UI">UX/UI</button>
+      </div>
+    </aside>
+
+  </div>
 
   <script>
-    const categoryOrder = ["Features", "Enhancements", "Bug fix", "UX/UI"];
+    let allIssues = [];
+    let selectedYear = new Date().getFullYear();
+    let selectedCategory = "All";
 
-    async function loadWhatsNew() {
-      const app = document.getElementById('app');
+    async function init() {
+      setupYearSwitcher();
+      setupCategoryFilters();
+      await fetchChangelog();
+    }
+
+    function setupYearSwitcher() {
+      const container = document.getElementById('year-switcher');
+      const currentYear = new Date().getFullYear();
+      
+      for (let y = currentYear; y >= 2020; y--) {
+        const btn = document.createElement('button');
+        btn.className = `year-btn ${y === selectedYear ? 'active' : ''}`;
+        btn.textContent = y;
+        btn.addEventListener('click', () => {
+          selectedYear = y;
+          document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderFeed();
+        });
+        container.appendChild(btn);
+      }
+    }
+
+    function setupCategoryFilters() {
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          selectedCategory = btn.dataset.category;
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderFeed();
+        });
+      });
+    }
+
+    async function fetchChangelog() {
       try {
-        const response = await fetch('data.json');
-        if (!response.ok) throw new Error("Data not found");
-        const issues = await response.json();
+        const res = await fetch('data.json');
+        if (!res.ok) throw new Error("Unable to load data.json");
+        allIssues = await res.json();
+        
+        updateStats();
+        renderFeed();
+      } catch (e) {
+        document.getElementById('changelog-feed').innerHTML = '<div class="no-updates">Unable to load changelog data.</div>';
+      }
+    }
 
-        if (issues.length === 0) {
-          app.innerHTML = '<div class="no-updates">No published updates at this time.</div>';
-          return;
+    function updateStats() {
+      const now = new Date();
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+
+      const monthCount = allIssues.filter(issue => {
+        const d = new Date(issue.closedAt);
+        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      }).length;
+
+      document.getElementById('issues-count').textContent = monthCount;
+    }
+
+    function renderFeed() {
+      const feed = document.getElementById('changelog-feed');
+      
+      // Filter by Year and Category
+      const filtered = allIssues.filter(issue => {
+        const issueYear = new Date(issue.closedAt).getFullYear();
+        const matchesYear = issueYear === selectedYear;
+        const matchesCategory = selectedCategory === "All" || issue.category.toLowerCase() === selectedCategory.toLowerCase();
+        return matchesYear && matchesCategory;
+      });
+
+      if (filtered.length === 0) {
+        feed.innerHTML = `<div class="no-updates">No updates recorded for ${selectedYear} in this category.</div>`;
+        return;
+      }
+
+      feed.innerHTML = '';
+
+      filtered.forEach(issue => {
+        const dateObj = new Date(issue.closedAt);
+        const dateLabel = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
+
+        const item = document.createElement('div');
+        item.className = 'timeline-item';
+
+        item.innerHTML = `
+          <div class="timeline-date">${dateLabel}</div>
+          <div class="tile-content">
+            <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
+              <div>
+                <span class="badge">${escapeHtml(issue.category)}</span>
+                <h3 class="issue-title">${escapeHtml(issue.title)}</h3>
+              </div>
+              ${hasDetails ? `
+                <button class="expand-btn" aria-label="Toggle details">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+              ` : ''}
+            </div>
+            ${hasDetails ? `
+              <div class="tile-details">
+                ${formatMarkdown(issue.resolutionText)}
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        if (hasDetails) {
+          const summaryEl = item.querySelector('.tile-summary');
+          summaryEl.addEventListener('click', () => {
+            item.classList.toggle('open');
+          });
         }
 
-        // Group issues by Resolution Date
-        const groupedByDate = {};
-        issues.forEach(issue => {
-          const dateStr = new Date(issue.closedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-          if (!groupedByDate[dateStr]) groupedByDate[dateStr] = [];
-          groupedByDate[dateStr].push(issue);
-        });
-
-        app.innerHTML = '';
-
-        // Build DOM structure
-        Object.keys(groupedByDate).forEach(date => {
-          const dateSection = document.createElement('div');
-          dateSection.className = 'date-group';
-
-          const dateHeader = document.createElement('h2');
-          dateHeader.className = 'date-header';
-          dateHeader.textContent = date;
-          dateSection.appendChild(dateHeader);
-
-          // Group by Category
-          const categoryGroup = {};
-          groupedByDate[date].forEach(issue => {
-            const cat = issue.category || "General";
-            if (!categoryGroup[cat]) categoryGroup[cat] = [];
-            categoryGroup[cat].push(issue);
-          });
-
-          // Sort categories according to specified order
-          const sortedCategories = Object.keys(categoryGroup).sort((a, b) => {
-            let indexA = categoryOrder.indexOf(a);
-            let indexB = categoryOrder.indexOf(b);
-            return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
-          });
-
-          sortedCategories.forEach(category => {
-            const catHeader = document.createElement('h3');
-            catHeader.className = 'category-header';
-            catHeader.textContent = category;
-            dateSection.appendChild(catHeader);
-
-            categoryGroup[category].forEach(issue => {
-              const tile = document.createElement('div');
-              tile.className = 'issue-tile';
-
-              const rawDetails = issue.resolutionText ? issue.resolutionText.trim() : '';
-              const hasDetails = rawDetails.length > 0;
-
-              tile.innerHTML = `
-                <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
-                  <h4 class="issue-title">${escapeHtml(issue.title)}</h4>
-                  ${hasDetails ? `
-                    <button class="expand-btn" aria-label="Toggle details">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-                    </button>
-                  ` : ''}
-                </div>
-                ${hasDetails ? `
-                  <div class="tile-details">
-                    ${formatMarkdown(rawDetails)}
-                  </div>
-                ` : ''}
-              `;
-
-              if (hasDetails) {
-                const summaryEl = tile.querySelector('.tile-summary');
-                summaryEl.addEventListener('click', () => {
-                  tile.classList.toggle('open');
-                });
-              }
-
-              dateSection.appendChild(tile);
-            });
-          });
-
-          app.appendChild(dateSection);
-        });
-
-      } catch (err) {
-        app.innerHTML = '<div class="no-updates">Unable to load updates right now.</div>';
-      }
+        feed.appendChild(item);
+      });
     }
 
     function escapeHtml(str) {
@@ -279,33 +451,22 @@
 
     function formatMarkdown(text) {
       if (!text) return '';
-
       let html = escapeHtml(text);
 
-      // Convert Markdown images: ![alt](url)
+      // Markdown parsing
       html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-
-      // Convert Markdown bold: **text**
       html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-
-      // Convert Markdown links: [text](url)
       html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-
-      // Convert bullet lists: - item
       html = html.replace(/^\s*-\s+(.+)$/gm, '<li>$1</li>');
       html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
 
-      // Format paragraphs
-      return html
-        .split(/\n\n+/)
-        .map(p => {
-          if (p.startsWith('<ul>') || p.startsWith('<img')) return p;
-          return `<p>${p.replace(/\n/g, '<br>')}</p>`;
-        })
-        .join('');
+      return html.split(/\n\n+/).map(p => {
+        if (p.startsWith('<ul>') || p.startsWith('<img')) return p;
+        return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+      }).join('');
     }
 
-    loadWhatsNew();
+    init();
   </script>
 </body>
 </html>
