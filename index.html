@@ -3,106 +3,286 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>What's New - Product Updates</title>
+  <title>What's new in DreamApply</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f8f9fa;
-      --card-bg: #ffffff;
-      --text: #212529;
-      --border: #e9ecef;
-      --accent: #0969da;
+      --da-navy: #0e1e38;
+      --da-blue: #0084ff;
+      --da-bg: #f4f6f9;
+      --da-card-bg: #ffffff;
+      --da-text-main: #1d2939;
+      --da-text-muted: #667085;
+      --da-border: #eaecf0;
     }
+
+    * { box-sizing: border-box; }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--da-bg);
+      color: var(--da-text-main);
       margin: 0;
-      padding: 2rem 1rem;
-    }
-
-    .container {
-      max-width: 680px;
-      margin: 0 auto;
+      padding: 0;
+      line-height: 1.5;
     }
 
     header {
-      margin-bottom: 2rem;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1rem;
+      background-color: var(--da-navy);
+      color: #ffffff;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    .header-content {
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     h1 {
-      font-size: 1.75rem;
+      font-size: 2.25rem;
+      font-weight: 700;
       margin: 0 0 0.5rem 0;
+      letter-spacing: -0.02em;
     }
 
     .subtitle {
-      color: #6c757d;
+      font-size: 1.1rem;
+      color: #d0d5dd;
       margin: 0;
-      font-size: 0.95rem;
     }
 
-    .feed {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    main {
+      max-width: 800px;
+      margin: -1.5rem auto 3rem auto;
+      padding: 0 1rem;
     }
 
-    .tile {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--accent);
-      border-radius: 6px;
+    .date-group {
+      margin-bottom: 2.5rem;
+    }
+
+    h2.date-header {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--da-navy);
+      border-bottom: 2px solid var(--da-border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    h3.category-header {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--da-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 1.25rem 0 0.75rem 0;
+    }
+
+    .issue-tile {
+      background: var(--da-card-bg);
+      border: 1px solid var(--da-border);
+      border-radius: 8px;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+
+    .issue-tile:hover {
+      border-color: #b2ddff;
+    }
+
+    .tile-summary {
       padding: 1rem 1.25rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    .tile-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.5rem;
+      cursor: default;
     }
 
-    .badge {
-      background-color: #ddf4ff;
-      color: #0969da;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.2rem 0.5rem;
-      border-radius: 12px;
-      text-transform: uppercase;
+    .tile-summary.expandable {
+      cursor: pointer;
     }
 
-    .date {
-      font-size: 0.8rem;
-      color: #6c757d;
-    }
-
-    .tile-title {
-      font-size: 1.05rem;
-      font-weight: 600;
+    .issue-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--da-text-main);
       margin: 0;
+    }
+
+    .expand-btn {
+      background: none;
+      border: none;
+      color: var(--da-text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      display: flex;
+      align-items: center;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .issue-tile.open .expand-btn {
+      transform: rotate(180deg);
+      color: var(--da-blue);
+    }
+
+    .tile-details {
+      display: none;
+      padding: 0 1.25rem 1.25rem 1.25rem;
+      border-top: 1px solid var(--da-border);
+      background-color: #fafafa;
+      color: #344054;
+      font-size: 0.95rem;
+    }
+
+    .issue-tile.open .tile-details {
+      display: block;
+    }
+
+    .tile-details img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      margin-top: 0.75rem;
+      border: 1px solid var(--da-border);
+    }
+
+    .no-updates {
+      text-align: center;
+      padding: 3rem 1rem;
+      background: #ffffff;
+      border-radius: 8px;
+      border: 1px solid var(--da-border);
+      color: var(--da-text-muted);
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header>
-      <h1>What's New</h1>
-      <p class="subtitle">Latest product improvements, feature updates, and bug fixes.</p>
-    </header>
-
-    <div class="feed">
-      <!-- ITEMS_START -->
-      <div class="tile"><div class="tile-header"><span class="badge">Update</span><span class="date">2026-09-18</span></div><h3 class="tile-title">The initial product release is now available!</h3></div>
-      <!-- New updates will be inserted here automatically -->
-      <!-- ITEMS_END -->
+  <header>
+    <div class="header-content">
+      <h1>What's new in DreamApply</h1>
+      <p class="subtitle">Check out the product improvements, feature updates and bug fixes.</p>
     </div>
-  </div>
+  </header>
 
+  <main id="app">
+    <div class="no-updates">Loading updates...</div>
+  </main>
+
+  <script>
+    const categoryOrder = ["Features", "Enhancements", "Bug fix", "UX/UI"];
+
+    async function loadWhatsNew() {
+      const app = document.getElementById('app');
+      try {
+        const response = await fetch('data.json');
+        if (!response.ok) throw new Error("Data not found");
+        const issues = await response.json();
+
+        if (issues.length === 0) {
+          app.innerHTML = '<div class="no-updates">No published updates at this time.</div>';
+          return;
+        }
+
+        // Group issues by Resolution Date
+        const groupedByDate = {};
+        issues.forEach(issue => {
+          const dateStr = new Date(issue.closedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+          if (!groupedByDate[dateStr]) groupedByDate[dateStr] = [];
+          groupedByDate[dateStr].push(issue);
+        });
+
+        app.innerHTML = '';
+
+        // Build DOM structure
+        Object.keys(groupedByDate).forEach(date => {
+          const dateSection = document.createElement('div');
+          dateSection.className = 'date-group';
+
+          const dateHeader = document.createElement('h2');
+          dateHeader.className = 'date-header';
+          dateHeader.textContent = date;
+          dateSection.appendChild(dateHeader);
+
+          // Group by Category
+          const categoryGroup = {};
+          groupedByDate[date].forEach(issue => {
+            const cat = issue.category || "General";
+            if (!categoryGroup[cat]) categoryGroup[cat] = [];
+            categoryGroup[cat].push(issue);
+          });
+
+          // Sort categories according to specified order
+          const sortedCategories = Object.keys(categoryGroup).sort((a, b) => {
+            let indexA = categoryOrder.indexOf(a);
+            let indexB = categoryOrder.indexOf(b);
+            return (indexA === -1 ? 99 : indexA) - (indexB === -1 ? 99 : indexB);
+          });
+
+          sortedCategories.forEach(category => {
+            const catHeader = document.createElement('h3');
+            catHeader.className = 'category-header';
+            catHeader.textContent = category;
+            dateSection.appendChild(catHeader);
+
+            categoryGroup[category].forEach(issue => {
+              const tile = document.createElement('div');
+              tile.className = 'issue-tile';
+
+              const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
+
+              tile.innerHTML = `
+                <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
+                  <h4 class="issue-title">${escapeHtml(issue.title)}</h4>
+                  ${hasDetails ? `
+                    <button class="expand-btn" aria-label="Toggle details">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                    </button>
+                  ` : ''}
+                </div>
+                ${hasDetails ? `
+                  <div class="tile-details">
+                    ${formatMarkdown(issue.resolutionText)}
+                  </div>
+                ` : ''}
+              `;
+
+              if (hasDetails) {
+                const summaryEl = tile.querySelector('.tile-summary');
+                summaryEl.addEventListener('click', () => {
+                  tile.classList.toggle('open');
+                });
+              }
+
+              dateSection.appendChild(tile);
+            });
+          });
+
+          app.appendChild(dateSection);
+        });
+
+      } catch (err) {
+        app.innerHTML = '<div class="no-updates">Unable to load updates right now.</div>';
+      }
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function formatMarkdown(text) {
+      // Basic markdown parsing for paragraphs and images
+      let html = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+      return html.split('\n\n').map(p => `<p>${escapeHtml(p).replace(/&lt;img/g, '<img').replace(/&gt;/g, '>')}</p>`).join('');
+    }
+
+    loadWhatsNew();
+  </script>
 </body>
 </html>
