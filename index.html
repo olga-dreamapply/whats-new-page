@@ -193,7 +193,7 @@
         // Group issues by Resolution Date
         const groupedByDate = {};
         issues.forEach(issue => {
-          const dateStr = new Date(issue.closedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+          const dateStr = new Date(issue.closedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
           if (!groupedByDate[dateStr]) groupedByDate[dateStr] = [];
           groupedByDate[dateStr].push(issue);
         });
@@ -235,7 +235,9 @@
               const tile = document.createElement('div');
               tile.className = 'issue-tile';
 
-              const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
+              // Check if resolution details text exists and is non-empty
+              const rawDetails = issue.resolutionText ? issue.resolutionText.trim() : '';
+              const hasDetails = rawDetails.length > 0;
 
               tile.innerHTML = `
                 <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
@@ -248,7 +250,7 @@
                 </div>
                 ${hasDetails ? `
                   <div class="tile-details">
-                    ${formatMarkdown(issue.resolutionText)}
+                    ${formatMarkdown(rawDetails)}
                   </div>
                 ` : ''}
               `;
@@ -278,18 +280,24 @@
 
     function formatMarkdown(text) {
       if (!text) return '';
-      
-      // Convert Markdown images: ![alt](url) -> <img src="url" alt="alt">
-      let html = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-      
-      // Convert Markdown bold text: **text** -> <strong>text</strong>
+
+      // Preserve images before escaping HTML
+      let html = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '___IMG___$1___URL___$2___ENDIMG___');
+
+      // Escape general HTML to prevent injection
+      html = escapeHtml(html);
+
+      // Restore images
+      html = html.replace(/___IMG___(.*?)___URL___(.*?)___ENDIMG___/g, '<img src="$2" alt="$1">');
+
+      // Format bold text
       html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-    
-      // Convert Markdown links: [text](url) -> <a href="url">text</a>
+
+      // Format markdown links
       html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-    
-      // Wrap paragraphs
-      return html.split(/\n\n+/).map(p => `<p>${p.trim()}</p>`).join('');
+
+      // Break paragraphs
+      return html.split(/\n\n+/).map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`).join('');
     }
 
     loadWhatsNew();
