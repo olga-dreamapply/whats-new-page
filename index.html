@@ -356,13 +356,15 @@
     }
 
     function setupCategoryFilters() {
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          selectedCategory = btn.dataset.category;
-          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          renderFeed();
-        });
+      const container = document.getElementById('category-filters');
+      container.addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+
+        selectedCategory = btn.getAttribute('data-category');
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderFeed();
       });
     }
 
@@ -395,16 +397,20 @@
     function renderFeed() {
       const feed = document.getElementById('changelog-feed');
       
-      // Filter by Year and Category
+      // Normalized Category Comparison
       const filtered = allIssues.filter(issue => {
         const issueYear = new Date(issue.closedAt).getFullYear();
         const matchesYear = issueYear === selectedYear;
-        const matchesCategory = selectedCategory === "All" || issue.category.toLowerCase() === selectedCategory.toLowerCase();
+
+        const issueCat = (issue.category || "").trim().toLowerCase();
+        const targetCat = selectedCategory.trim().toLowerCase();
+
+        const matchesCategory = targetCat === "all" || issueCat === targetCat;
         return matchesYear && matchesCategory;
       });
 
       if (filtered.length === 0) {
-        feed.innerHTML = `<div class="no-updates">No updates recorded for ${selectedYear} in this category.</div>`;
+        feed.innerHTML = `<div class="no-updates">No updates recorded for ${selectedYear} under "${escapeHtml(selectedCategory)}".</div>`;
         return;
       }
 
@@ -421,7 +427,7 @@
 
       feed.innerHTML = '';
 
-      // Render timeline groups (one date label per group)
+      // Render timeline groups
       Object.keys(groupedByDate).forEach(dateLabel => {
         const groupEl = document.createElement('div');
         groupEl.className = 'timeline-group';
