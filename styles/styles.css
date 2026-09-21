@@ -241,7 +241,7 @@ h1 {
   margin-bottom: 0.5rem;
 }
 
-.badge {
+.badge, .badge-module {
   display: inline-block;
   font-size: 0.75rem;
   font-weight: 600;
@@ -252,15 +252,9 @@ h1 {
   color: var(--da-accent);
 }
 
-.badge-module {
-  background: #f1f5f9;
-  color: var(--da-text-main);
-  border: 1px solid var(--da-border);
-}
-
 .issue-title {
   font-size: 1.05rem;
-  font-weight: 600;
+  font-weight: 600;a
   color: var(--da-text-main);
   margin: 0;
 }
