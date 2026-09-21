@@ -7,7 +7,7 @@
   --da-card: #ffffff;
   --da-text-main: #0f172a;
   --da-text-muted: #64748b;
-  --da-border: #e2e8f0;
+  --da-border: #eee;
 }
 
 * { 
@@ -111,7 +111,7 @@ h1 {
 
 .stat-box {
   background: var(--da-accent-light);
-  border: 1px solid #eee;
+  border: 1px solid var(--da-border);
   border-radius: 5px;
   padding: 0.85rem 1rem;
   text-align: left;
