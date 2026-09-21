@@ -467,9 +467,9 @@
           const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
           const cats = getIssueCategories(issue);
 
-          // BADGE LOGIC:
-          // 1. If [Module] name exists in description/title, show it as badge-module.
-          // 2. If NO module exists, display the assigned Category label as the badge.
+          // BADGE DISPLAY LOGIC:
+          // 1. If [Module] was extracted from title, display module badge.
+          // 2. Otherwise, fall back to displaying the assigned Category label as the badge.
           let badgesHtml = '';
           if (issue.module && issue.module.trim().length > 0) {
             badgesHtml = `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
