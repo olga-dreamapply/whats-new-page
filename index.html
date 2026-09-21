@@ -351,7 +351,7 @@
       <h1>What's new in DreamApply</h1>
       <p class="subtitle">A complete log of product improvements, features, and bug fixes.</p>
       
-      <!-- Detailed Last Month Stats Section -->
+      <!-- Detailed Stats Section -->
       <div class="stats-container">
         <div class="stats-header">
           <div>
@@ -359,7 +359,7 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
               Product Momentum Report
             </div>
-            <div class="stats-subtitle" id="stats-month-label">Here is a breakdown of what was shipped last month:</div>
+            <div class="stats-subtitle" id="stats-month-label">Here is a breakdown of what was shipped this month:</div>
           </div>
         </div>
 
@@ -466,26 +466,34 @@
         if (!res.ok) throw new Error("Unable to load data.json");
         allIssues = await res.json();
         
-        updateLastMonthStats();
+        updateMonthStats();
         renderFeed();
       } catch (e) {
         document.getElementById('changelog-feed').innerHTML = '<div class="no-updates">Unable to load changelog data.</div>';
       }
     }
 
-    function updateLastMonthStats() {
-      const now = new Date();
-      // Calculate previous calendar month & year
-      const targetDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-      const targetMonth = targetDate.getMonth();
-      const targetYear = targetDate.getFullYear();
+    function updateMonthStats() {
+      // Find the latest issue date in data.json (or fallback to today)
+      let targetMonth, targetYear, monthName;
+      
+      if (allIssues.length > 0) {
+        const latestDate = new Date(allIssues[0].closedAt);
+        targetMonth = latestDate.getMonth();
+        targetYear = latestDate.getFullYear();
+        monthName = latestDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      } else {
+        const now = new Date();
+        targetMonth = now.getMonth();
+        targetYear = now.getFullYear();
+        monthName = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      }
 
-      const monthName = targetDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
       document.getElementById('stats-month-label').textContent = 
         `Our engineering team stayed busy continuously improving DreamApply. Here is what was delivered in ${monthName}:`;
 
-      // Filter issues closed in previous month
-      const lastMonthIssues = allIssues.filter(issue => {
+      // Filter issues closed in target month
+      const currentMonthIssues = allIssues.filter(issue => {
         const d = new Date(issue.closedAt);
         return d.getMonth() === targetMonth && d.getFullYear() === targetYear;
       });
@@ -495,14 +503,15 @@
       let countUX = 0;
       let countBugs = 0;
 
-      lastMonthIssues.forEach(issue => {
+      currentMonthIssues.forEach(issue => {
         const cats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
 
-        // Exact match against Category: labels
-        if (cats.includes('feature')) countFeatures++;
-        if (cats.includes('enhancement')) countEnhancements++;
-        if (cats.includes('ux/ui') || cats.includes('ui/ux')) countUX++;
-        if (cats.includes('bug fix') || cats.includes('bug')) countBugs++;
+        cats.forEach(cat => {
+          if (cat.includes('feature')) countFeatures++;
+          else if (cat.includes('enhancement')) countEnhancements++;
+          else if (cat.includes('ux') || cat.includes('ui')) countUX++;
+          else if (cat.includes('bug')) countBugs++;
+        });
       });
 
       document.getElementById('stat-features').textContent = countFeatures;
@@ -531,7 +540,13 @@
         const matchesYear = issueYear === selectedYear;
 
         const issueCats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
-        const matchesCategory = issueCats.some(c => selectedCats.includes(c));
+        const matchesCategory = issueCats.some(c => {
+          if (c.includes('feature') && selectedCats.includes('feature')) return true;
+          if (c.includes('enhancement') && selectedCats.includes('enhancement')) return true;
+          if ((c.includes('ux') || c.includes('ui')) && selectedCats.includes('ux/ui')) return true;
+          if (c.includes('bug') && selectedCats.includes('bug fix')) return true;
+          return selectedCats.includes(c);
+        });
         
         return matchesYear && matchesCategory;
       });
