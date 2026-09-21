@@ -190,6 +190,12 @@
       color: var(--stripe-accent);
     }
 
+    .badge-module {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
+
     .issue-title {
       font-size: 1.1rem;
       font-weight: 600;
@@ -247,33 +253,27 @@
       margin-bottom: 1rem;
     }
 
-    .filter-list {
+    .checkbox-group {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.65rem;
     }
 
-    .filter-btn {
-      background: transparent;
-      border: none;
-      text-align: left;
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
       font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--stripe-text-muted);
+      color: var(--stripe-text-main);
       cursor: pointer;
-      padding: 0.4rem 0.6rem;
-      border-radius: 6px;
-      transition: background 0.2s ease;
+      user-select: none;
     }
 
-    .filter-btn:hover {
-      background: var(--stripe-border);
-    }
-
-    .filter-btn.active {
-      color: var(--stripe-accent);
-      background: #eef2ff;
-      font-weight: 600;
+    .checkbox-label input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--stripe-accent);
+      cursor: pointer;
     }
 
     .no-updates {
@@ -318,11 +318,22 @@
       <div class="no-updates">Loading changelog...</div>
     </div>
 
-    <!-- Category Filters Sidebar -->
+    <!-- Category Filters Sidebar (Checkboxes) -->
     <aside class="sidebar">
       <div class="filter-title">Categories</div>
-      <div class="filter-list" id="category-filters">
-        <button class="filter-btn active" data-category="All">All Updates</button>
+      <div class="checkbox-group" id="category-filters">
+        <label class="checkbox-label">
+          <input type="checkbox" value="Feature" checked> Feature
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" value="Enhancement" checked> Enhancement
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" value="Bug fix" checked> Bug fix
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" value="UX/UI" checked> UX/UI
+        </label>
       </div>
     </aside>
 
@@ -331,10 +342,10 @@
   <script>
     let allIssues = [];
     let selectedYear = new Date().getFullYear();
-    let selectedCategory = "All";
 
     async function init() {
       setupYearSwitcher();
+      setupCheckboxFilters();
       await fetchChangelog();
     }
 
@@ -356,39 +367,18 @@
       }
     }
 
-    function generateCategoryFilters() {
-      const container = document.getElementById('category-filters');
-      const categoriesSet = new Set();
-
-      // Collect categories across ALL issues regardless of selected year
-      allIssues.forEach(issue => {
-        if (issue.categories && Array.isArray(issue.categories)) {
-          issue.categories.forEach(c => categoriesSet.add(c.trim()));
-        } else if (issue.category && issue.category.trim()) {
-          // Fallback for single string categories
-          issue.category.split(',').forEach(c => categoriesSet.add(c.trim()));
-        }
+    function setupCheckboxFilters() {
+      const checkboxes = document.querySelectorAll('#category-filters input[type="checkbox"]');
+      checkboxes.forEach(cb => {
+        cb.addEventListener('change', () => {
+          renderFeed();
+        });
       });
+    }
 
-      const sortedCategories = Array.from(categoriesSet).sort((a, b) => a.localeCompare(b));
-
-      let html = `<button class="filter-btn ${selectedCategory === 'All' ? 'active' : ''}" data-category="All">All Updates</button>`;
-      sortedCategories.forEach(cat => {
-        const isActive = selectedCategory.toLowerCase() === cat.toLowerCase();
-        html += `<button class="filter-btn ${isActive ? 'active' : ''}" data-category="${escapeHtml(cat)}">${escapeHtml(cat)}</button>`;
-      });
-
-      container.innerHTML = html;
-
-      container.onclick = (e) => {
-        const btn = e.target.closest('.filter-btn');
-        if (!btn) return;
-
-        selectedCategory = btn.getAttribute('data-category');
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderFeed();
-      };
+    function getSelectedCategories() {
+      const checked = document.querySelectorAll('#category-filters input[type="checkbox"]:checked');
+      return Array.from(checked).map(cb => cb.value.toLowerCase().trim());
     }
 
     async function fetchChangelog() {
@@ -397,7 +387,6 @@
         if (!res.ok) throw new Error("Unable to load data.json");
         allIssues = await res.json();
         
-        generateCategoryFilters();
         updateStats();
         renderFeed();
       } catch (e) {
@@ -430,23 +419,26 @@
 
     function renderFeed() {
       const feed = document.getElementById('changelog-feed');
-      
+      const selectedCats = getSelectedCategories();
+
+      // Filter by Year and Checked Categories
       const filtered = allIssues.filter(issue => {
         const issueYear = new Date(issue.closedAt).getFullYear();
         const matchesYear = issueYear === selectedYear;
 
-        const issueCats = getIssueCategories(issue).map(c => c.toLowerCase());
-        const targetCat = selectedCategory.trim().toLowerCase();
-
-        const matchesCategory = targetCat === "all" || issueCats.includes(targetCat);
+        const issueCats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
+        
+        // Match if issue shares ANY category with the selected checkboxes
+        const matchesCategory = issueCats.some(c => selectedCats.includes(c));
         return matchesYear && matchesCategory;
       });
 
       if (filtered.length === 0) {
-        feed.innerHTML = `<div class="no-updates">No updates recorded for ${selectedYear} under "${escapeHtml(selectedCategory)}".</div>`;
+        feed.innerHTML = `<div class="no-updates">No updates found for ${selectedYear} matching selected categories.</div>`;
         return;
       }
 
+      // Group issues by exact date string
       const groupedByDate = {};
       filtered.forEach(issue => {
         const dateObj = new Date(issue.closedAt);
@@ -459,6 +451,7 @@
 
       feed.innerHTML = '';
 
+      // Render timeline groups
       Object.keys(groupedByDate).forEach(dateLabel => {
         const groupEl = document.createElement('div');
         groupEl.className = 'timeline-group';
@@ -474,7 +467,12 @@
           const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
           const cats = getIssueCategories(issue);
 
-          const badgesHtml = cats.map(c => `<span class="badge">${escapeHtml(c)}</span>`).join('');
+          // Render module badge from square brackets if available
+          let badgesHtml = '';
+          if (issue.module) {
+            badgesHtml += `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
+          }
+          badgesHtml += cats.map(c => `<span class="badge">${escapeHtml(c)}</span>`).join('');
 
           const tileEl = document.createElement('div');
           tileEl.className = 'tile-content';
