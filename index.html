@@ -498,10 +498,11 @@
       lastMonthIssues.forEach(issue => {
         const cats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
 
-        if (cats.some(c => c.includes('feature'))) countFeatures++;
-        if (cats.some(c => c.includes('enhancement'))) countEnhancements++;
-        if (cats.some(c => c.includes('ux') || c.includes('ui'))) countUX++;
-        if (cats.some(c => c.includes('bug'))) countBugs++;
+        // Exact match against Category: labels
+        if (cats.includes('feature')) countFeatures++;
+        if (cats.includes('enhancement')) countEnhancements++;
+        if (cats.includes('ux/ui') || cats.includes('ui/ux')) countUX++;
+        if (cats.includes('bug fix') || cats.includes('bug')) countBugs++;
       });
 
       document.getElementById('stat-features').textContent = countFeatures;
