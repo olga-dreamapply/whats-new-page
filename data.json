@@ -1,16 +1,7 @@
 [
   "Tables",
   "Rankings",
-  {
-    "id": 2,
-    "title": "New feature is available",
-    "module": null,
-    "closedAt": "2026-09-18T10:59:14Z",
-    "categories": [
-      "UX/UI"
-    ],
-    "resolutionText": "A requested feature has been imlemented today."
-  },
+  "AI Highlighter",
   {
     "id": 1,
     "title": "The initial product release is now available!",
