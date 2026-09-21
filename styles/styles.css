@@ -64,7 +64,7 @@ h1 {
   font-weight: 350;
 }
 
-.subtitle a {
+.subtitle a, a {
   color: #0092D0;
 }
 
