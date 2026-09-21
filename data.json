@@ -1,13 +1,13 @@
 [
   {
     "id": 5,
-    "title": "A new system setting has been introduced!",
+    "title": "Custom Title for What's New Item",
     "module": "Settings",
     "closedAt": "2026-09-21T07:06:54Z",
     "categories": [
       "UX/UI"
     ],
-    "resolutionText": ""
+    "resolutionText": "This text and any images below will be rendered inside the expandable section.\n![Demo Screenshot](https://example.com/image.png)"
   },
   {
     "id": 4,
