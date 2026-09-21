@@ -245,19 +245,11 @@ h1 {
   border-radius: 5px;
   text-transform: uppercase;
   background: var(--da-accent-light);
-  color: var(--da-accent);
+  color: var(--da-text-muted);
 }
 
 .badge-module {
-  display: inline-block;
-  font-size: 0.65rem;
-  font-weight: 600;
-  padding: 0.2rem 0.6rem;
-  border-radius: 5px;
-  text-transform: uppercase;
-  background: #e2e8f0;
-  color: #1e293b;
-  border: 1px solid #cbd5e1;
+  color: var(--da-accent);
 }
 
 .issue-title {
