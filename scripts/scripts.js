@@ -161,7 +161,10 @@ function renderFeed() {
 
   feed.innerHTML = '';
 
-  Object.keys(groupedByDate).forEach(dateLabel => {
+  const dateKeys = Object.keys(groupedByDate);
+  const firstDateKey = dateKeys.length > 0 ? dateKeys[0] : null;
+
+  dateKeys.forEach(dateLabel => {
     const groupEl = document.createElement('div');
     groupEl.className = 'timeline-group';
 
@@ -172,19 +175,24 @@ function renderFeed() {
     const stackEl = document.createElement('div');
     stackEl.className = 'tiles-stack';
 
+    const isLatestReleaseDate = (dateLabel === firstDateKey);
+
     groupedByDate[dateLabel].forEach(issue => {
       const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
       const cats = getIssueCategories(issue);
 
+      // Amendment 1: Include both Module badge AND Category badges
       let badgesHtml = '';
       if (issue.module && issue.module.trim().length > 0) {
-        badgesHtml = `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
-      } else {
-        badgesHtml = cats.map(c => `<span class="badge">${escapeHtml(c)}</span>`).join('');
+        badgesHtml += `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
       }
+      badgesHtml += cats.map(c => `<span class="badge">${escapeHtml(c)}</span>`).join('');
 
       const tileEl = document.createElement('div');
-      tileEl.className = 'tile-content';
+      
+      // Amendment 2: Expand items of the latest release date by default
+      const shouldExpand = isLatestReleaseDate && hasDetails;
+      tileEl.className = `tile-content ${shouldExpand ? 'open' : ''}`;
 
       tileEl.innerHTML = `
         <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
@@ -242,7 +250,6 @@ function formatMarkdown(text) {
   }).join('');
 }
 
-// Initialize when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', init);
 } else {
