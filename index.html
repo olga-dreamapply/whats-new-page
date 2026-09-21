@@ -22,23 +22,37 @@
   <div class="page-body">
     <p class="subtitle">A complete log of product improvements, features, and bug fixes.</p>
 
-    <!-- Minimal Product Momentum Report -->
+    <!-- Product Momentum Report / Stats Banner -->
     <section class="stats-container">
-      <div class="stats-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-          <polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-        Product Momentum Report
+      <div class="stats-header">
+        <div class="stats-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          Product Momentum Report
+        </div>
+        <div class="stats-subtitle" id="stats-month-label">Here is a breakdown of what was shipped this month:</div>
       </div>
-      <div class="stats-subtitle" id="stats-month-label">Here is a breakdown of what was shipped this month:</div>
 
-      <ul class="stats-list">
-        <li>Features: <strong id="stat-features">0</strong></li>
-        <li>Enhancements: <strong id="stat-enhancements">0</strong></li>
-        <li>UI/UX Tweaks: <strong id="stat-ux">0</strong></li>
-        <li>Bugs Fixed: <strong id="stat-bugs">0</strong></li>
-      </ul>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-number" id="stat-features">0</div>
+          <div class="stat-label">Features</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="stat-enhancements">0</div>
+          <div class="stat-label">Enhancements</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="stat-ux">0</div>
+          <div class="stat-label">UI/UX Tweaks</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="stat-bugs">0</div>
+          <div class="stat-label">Bugs Fixed</div>
+        </div>
+      </div>
     </section>
 
     <!-- Year Switcher Bar -->
