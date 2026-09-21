@@ -243,18 +243,18 @@ h1 {
 
 .badge, .badge-module {
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   font-weight: 600;
   padding: 0.2rem 0.6rem;
   border-radius: 5px;
   text-transform: uppercase;
   background: var(--da-accent-light);
-  color: var(--da-accent);
+  color: var(--da-text-muted);
 }
 
 .issue-title {
   font-size: 1.05rem;
-  font-weight: 600;a
+  font-weight: 600;
   color: var(--da-text-main);
   margin: 0;
 }
