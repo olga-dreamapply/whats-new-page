@@ -7,659 +7,87 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --da-navy: #0e1e38;
-      --da-blue: #0084ff;
-      --da-blue-hover: #0066cc;
-      --da-light-bg: #f4f6f9;
-      --da-card: #ffffff;
-      --da-text-main: #1d2939;
-      --da-text-muted: #667085;
-      --da-border: #eaecf0;
-      --da-accent-bg: #e6f3ff;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--da-light-bg);
-      color: var(--da-text-main);
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
-    }
-
-    /* DreamApply Header */
-    header {
-      background: var(--da-navy);
-      color: #ffffff;
-      padding: 3.5rem 1.5rem 3rem;
-      border-bottom: 4px solid var(--da-blue);
-    }
-
-    .header-content {
-      max-width: 1080px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin: 0 0 0.5rem 0;
-      letter-spacing: -0.02em;
-      color: #ffffff;
-    }
-
-    .subtitle {
-      font-size: 1.15rem;
-      color: #d0d5dd;
-      margin: 0 0 2rem 0;
-    }
-
-    /* Stats Section */
-    .stats-container {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 12px;
-      padding: 1.25rem 1.5rem;
-      backdrop-filter: blur(8px);
-    }
-
-    .stats-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .stats-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .stats-subtitle {
-      font-size: 0.88rem;
-      color: #eaecf0;
-      margin-top: 0.25rem;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 1rem;
-      margin-top: 0.75rem;
-    }
-
-    .stat-box {
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 0.75rem 1rem;
-      text-align: left;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .stat-number {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: var(--da-blue);
-      line-height: 1.2;
-    }
-
-    .stat-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--da-text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      margin-top: 0.2rem;
-    }
-
-    /* Controls Bar: Year Switcher */
-    .controls-bar {
-      max-width: 1080px;
-      margin: 2rem auto 0;
-      padding: 0 1.5rem;
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .year-btn {
-      background: #ffffff;
-      border: 1px solid var(--da-border);
-      padding: 0.4rem 1.1rem;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: var(--da-text-muted);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .year-btn:hover {
-      border-color: var(--da-blue);
-      color: var(--da-blue);
-    }
-
-    .year-btn.active {
-      background: var(--da-blue);
-      color: #ffffff;
-      border-color: var(--da-blue);
-    }
-
-    /* Layout Grid */
-    .main-container {
-      max-width: 1080px;
-      margin: 2rem auto 4rem;
-      padding: 0 1.5rem;
-      display: grid;
-      grid-template-columns: 1fr 240px;
-      gap: 3rem;
-    }
-
-    /* Content Feed & Timeline */
-    .changelog-feed {
-      position: relative;
-    }
-
-    .changelog-feed::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 110px;
-      width: 2px;
-      background: var(--da-border);
-      z-index: 1;
-    }
-
-    .timeline-group {
-      display: grid;
-      grid-template-columns: 100px 1fr;
-      gap: 2rem;
-      margin-bottom: 2.5rem;
-      position: relative;
-      z-index: 2;
-    }
-
-    .timeline-date {
-      text-align: right;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--da-navy);
-      padding-top: 0.75rem;
-    }
-
-    .tiles-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .tile-content {
-      background: var(--da-card);
-      border: 1px solid var(--da-border);
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
-      overflow: hidden;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .tile-content:hover {
-      border-color: #b2ddff;
-      box-shadow: 0 4px 12px rgba(0, 132, 255, 0.08);
-    }
-
-    .tile-summary {
-      padding: 1.25rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .tile-summary.expandable {
-      cursor: pointer;
-    }
-
-    .badge-container {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-      margin-bottom: 0.5rem;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.2rem 0.6rem;
-      border-radius: 12px;
-      text-transform: uppercase;
-      background: var(--da-accent-bg);
-      color: var(--da-blue);
-    }
-
-    .badge-module {
-      background: #f1f5f9;
-      color: var(--da-navy);
-      border: 1px solid #cbd5e1;
-    }
-
-    .issue-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--da-text-main);
-      margin: 0;
-    }
-
-    .expand-btn {
-      background: none;
-      border: none;
-      color: var(--da-text-muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      transition: transform 0.2s ease, color 0.2s ease;
-    }
-
-    .tile-content.open .expand-btn {
-      transform: rotate(180deg);
-      color: var(--da-blue);
-    }
-
-    .tile-details {
-      display: none;
-      padding: 0 1.5rem 1.5rem;
-      border-top: 1px solid var(--da-border);
-      background: #fafafa;
-      font-size: 0.95rem;
-      color: #344054;
-    }
-
-    .tile-content.open .tile-details {
-      display: block;
-    }
-
-    .tile-details img {
-      max-width: 100%;
-      border-radius: 8px;
-      margin-top: 1rem;
-      border: 1px solid var(--da-border);
-    }
-
-    /* Sidebar Filters */
-    .sidebar {
-      position: sticky;
-      top: 2rem;
-      height: fit-content;
-      background: var(--da-card);
-      border: 1px solid var(--da-border);
-      border-radius: 8px;
-      padding: 1.25rem;
-    }
-
-    .filter-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--da-navy);
-      margin-bottom: 1rem;
-      border-bottom: 2px solid var(--da-light-bg);
-      padding-bottom: 0.5rem;
-    }
-
-    .checkbox-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-
-    .checkbox-label {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-size: 0.95rem;
-      color: var(--da-text-main);
-      cursor: pointer;
-      user-select: none;
-      font-weight: 500;
-    }
-
-    .checkbox-label input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--da-blue);
-      cursor: pointer;
-    }
-
-    .no-updates {
-      text-align: center;
-      padding: 4rem 1rem;
-      background: var(--da-card);
-      border-radius: 8px;
-      border: 1px solid var(--da-border);
-      color: var(--da-text-muted);
-    }
-
-    @media (max-width: 768px) {
-      .main-container { grid-template-columns: 1fr; }
-      .changelog-feed::before { left: 0; }
-      .timeline-group { grid-template-columns: 1fr; gap: 0.5rem; }
-      .timeline-date { text-align: left; padding-top: 0; }
-    }
-  </style>
+  <link rel="stylesheet" href="styles/styles.css">
 </head>
 <body>
 
+  <!-- Fixed-Height Light Header (80px) -->
   <header>
     <div class="header-content">
       <h1>What's new in DreamApply</h1>
-      <p class="subtitle">A complete log of product improvements, features, and bug fixes.</p>
-      
-      <!-- Detailed Stats Section -->
-      <div class="stats-container">
-        <div class="stats-header">
-          <div>
-            <div class="stats-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-              Product Momentum Report
-            </div>
-            <div class="stats-subtitle" id="stats-month-label">Here is a breakdown of what was shipped this month:</div>
-          </div>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-box">
-            <div class="stat-number" id="stat-features">0</div>
-            <div class="stat-label">Features</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-number" id="stat-enhancements">0</div>
-            <div class="stat-label">Enhancements</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-number" id="stat-ux">0</div>
-            <div class="stat-label">UI/UX Tweaks</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-number" id="stat-bugs">0</div>
-            <div class="stat-label">Bugs Fixed</div>
-          </div>
-        </div>
-      </div>
-
     </div>
   </header>
 
-  <!-- Year Switcher Bar -->
-  <div class="controls-bar" id="year-switcher"></div>
+  <!-- Page Content Container -->
+  <div class="page-body">
+    <p class="subtitle">A complete log of product improvements, features, and bug fixes.</p>
 
-  <!-- Layout Grid -->
-  <div class="main-container">
-    
-    <!-- Timeline Feed -->
-    <div class="changelog-feed" id="changelog-feed">
-      <div class="no-updates">Loading changelog...</div>
-    </div>
-
-    <!-- Category Filters Sidebar (Checkboxes) -->
-    <aside class="sidebar">
-      <div class="filter-title">Categories</div>
-      <div class="checkbox-group" id="category-filters">
-        <label class="checkbox-label">
-          <input type="checkbox" value="Feature" checked> Feature
-        </label>
-        <label class="checkbox-label">
-          <input type="checkbox" value="Enhancement" checked> Enhancement
-        </label>
-        <label class="checkbox-label">
-          <input type="checkbox" value="Bug fix" checked> Bug fix
-        </label>
-        <label class="checkbox-label">
-          <input type="checkbox" value="UX/UI" checked> UX/UI
-        </label>
+    <!-- Product Momentum Report / Stats Banner -->
+    <section class="stats-container">
+      <div class="stats-header">
+        <div class="stats-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          Product Momentum Report
+        </div>
+        <div class="stats-subtitle" id="stats-month-label">Here is a breakdown of what was shipped this month:</div>
       </div>
-    </aside>
 
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-number" id="stat-features">0</div>
+          <div class="stat-label">Features</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="stat-enhancements">0</div>
+          <div class="stat-label">Enhancements</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="stat-ux">0</div>
+          <div class="stat-label">UI/UX Tweaks</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number" id="stat-bugs">0</div>
+          <div class="stat-label">Bugs Fixed</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Year Switcher Bar -->
+    <div class="controls-bar" id="year-switcher"></div>
+
+    <!-- Layout Grid -->
+    <div class="main-container">
+      
+      <!-- Timeline Feed -->
+      <main class="changelog-feed" id="changelog-feed">
+        <div class="no-updates">Loading changelog...</div>
+      </main>
+
+      <!-- Category Filters Sidebar -->
+      <aside class="sidebar">
+        <div class="filter-title">Categories</div>
+        <div class="checkbox-group" id="category-filters">
+          <label class="checkbox-label">
+            <input type="checkbox" value="Feature" checked> Feature
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" value="Enhancement" checked> Enhancement
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" value="Bug fix" checked> Bug fix
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" value="UX/UI" checked> UX/UI
+          </label>
+        </div>
+      </aside>
+
+    </div>
   </div>
 
-  <script>
-    let allIssues = [];
-    let selectedYear = new Date().getFullYear();
-
-    async function init() {
-      setupYearSwitcher();
-      setupCheckboxFilters();
-      await fetchChangelog();
-    }
-
-    function setupYearSwitcher() {
-      const container = document.getElementById('year-switcher');
-      const currentYear = new Date().getFullYear();
-      
-      for (let y = currentYear; y >= 2020; y--) {
-        const btn = document.createElement('button');
-        btn.className = `year-btn ${y === selectedYear ? 'active' : ''}`;
-        btn.textContent = y;
-        btn.addEventListener('click', () => {
-          selectedYear = y;
-          document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          renderFeed();
-        });
-        container.appendChild(btn);
-      }
-    }
-
-    function setupCheckboxFilters() {
-      const checkboxes = document.querySelectorAll('#category-filters input[type="checkbox"]');
-      checkboxes.forEach(cb => {
-        cb.addEventListener('change', () => {
-          renderFeed();
-        });
-      });
-    }
-
-    function getSelectedCategories() {
-      const checked = document.querySelectorAll('#category-filters input[type="checkbox"]:checked');
-      return Array.from(checked).map(cb => cb.value.toLowerCase().trim());
-    }
-
-    async function fetchChangelog() {
-      try {
-        const res = await fetch('data.json');
-        if (!res.ok) throw new Error("Unable to load data.json");
-        allIssues = await res.json();
-        
-        updateMonthStats();
-        renderFeed();
-      } catch (e) {
-        document.getElementById('changelog-feed').innerHTML = '<div class="no-updates">Unable to load changelog data.</div>';
-      }
-    }
-
-    function updateMonthStats() {
-      let targetMonth, targetYear, monthName;
-      
-      if (allIssues.length > 0) {
-        const latestDate = new Date(allIssues[0].closedAt);
-        targetMonth = latestDate.getMonth();
-        targetYear = latestDate.getFullYear();
-        monthName = latestDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-      } else {
-        const now = new Date();
-        targetMonth = now.getMonth();
-        targetYear = now.getFullYear();
-        monthName = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-      }
-
-      document.getElementById('stats-month-label').textContent = 
-        `Our engineering team stayed busy continuously improving DreamApply. Here is what was delivered in ${monthName}:`;
-
-      const currentMonthIssues = allIssues.filter(issue => {
-        const d = new Date(issue.closedAt);
-        return d.getMonth() === targetMonth && d.getFullYear() === targetYear;
-      });
-
-      let countFeatures = 0;
-      let countEnhancements = 0;
-      let countUX = 0;
-      let countBugs = 0;
-
-      currentMonthIssues.forEach(issue => {
-        const cats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
-
-        cats.forEach(cat => {
-          if (cat.includes('feature')) countFeatures++;
-          else if (cat.includes('enhancement')) countEnhancements++;
-          else if (cat.includes('ux') || cat.includes('ui')) countUX++;
-          else if (cat.includes('bug')) countBugs++;
-        });
-      });
-
-      document.getElementById('stat-features').textContent = countFeatures;
-      document.getElementById('stat-enhancements').textContent = countEnhancements;
-      document.getElementById('stat-ux').textContent = countUX;
-      document.getElementById('stat-bugs').textContent = countBugs;
-    }
-
-    function getIssueCategories(issue) {
-      if (issue.categories && Array.isArray(issue.categories)) {
-        return issue.categories;
-      }
-      if (issue.category) {
-        return issue.category.split(',').map(c => c.trim());
-      }
-      return ["General"];
-    }
-
-    function renderFeed() {
-      const feed = document.getElementById('changelog-feed');
-      const selectedCats = getSelectedCategories();
-
-      const filtered = allIssues.filter(issue => {
-        const issueYear = new Date(issue.closedAt).getFullYear();
-        const matchesYear = issueYear === selectedYear;
-
-        const issueCats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
-        const matchesCategory = issueCats.some(c => {
-          if (c.includes('feature') && selectedCats.includes('feature')) return true;
-          if (c.includes('enhancement') && selectedCats.includes('enhancement')) return true;
-          if ((c.includes('ux') || c.includes('ui')) && selectedCats.includes('ux/ui')) return true;
-          if (c.includes('bug') && selectedCats.includes('bug fix')) return true;
-          return selectedCats.includes(c);
-        });
-        
-        return matchesYear && matchesCategory;
-      });
-
-      if (filtered.length === 0) {
-        feed.innerHTML = `<div class="no-updates">No updates found for ${selectedYear} matching selected categories.</div>`;
-        return;
-      }
-
-      const groupedByDate = {};
-      filtered.forEach(issue => {
-        const dateObj = new Date(issue.closedAt);
-        const dateKey = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        if (!groupedByDate[dateKey]) {
-          groupedByDate[dateKey] = [];
-        }
-        groupedByDate[dateKey].push(issue);
-      });
-
-      feed.innerHTML = '';
-
-      Object.keys(groupedByDate).forEach(dateLabel => {
-        const groupEl = document.createElement('div');
-        groupEl.className = 'timeline-group';
-
-        const dateEl = document.createElement('div');
-        dateEl.className = 'timeline-date';
-        dateEl.textContent = dateLabel;
-
-        const stackEl = document.createElement('div');
-        stackEl.className = 'tiles-stack';
-
-        groupedByDate[dateLabel].forEach(issue => {
-          const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
-          const cats = getIssueCategories(issue);
-
-          let badgesHtml = '';
-          if (issue.module && issue.module.trim().length > 0) {
-            badgesHtml = `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
-          } else {
-            badgesHtml = cats.map(c => `<span class="badge">${escapeHtml(c)}</span>`).join('');
-          }
-
-          const tileEl = document.createElement('div');
-          tileEl.className = 'tile-content';
-
-          tileEl.innerHTML = `
-            <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
-              <div>
-                <div class="badge-container">${badgesHtml}</div>
-                <h3 class="issue-title">${escapeHtml(issue.title)}</h3>
-              </div>
-              ${hasDetails ? `
-                <button class="expand-btn" aria-label="Toggle details">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-                </button>
-              ` : ''}
-            </div>
-            ${hasDetails ? `
-              <div class="tile-details">
-                ${formatMarkdown(issue.resolutionText)}
-              </div>
-            ` : ''}
-          `;
-
-          if (hasDetails) {
-            const summaryEl = tileEl.querySelector('.tile-summary');
-            summaryEl.addEventListener('click', () => {
-              tileEl.classList.toggle('open');
-            });
-          }
-
-          stackEl.appendChild(tileEl);
-        });
-
-        groupEl.appendChild(dateEl);
-        groupEl.appendChild(stackEl);
-        feed.appendChild(groupEl);
-      });
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-    }
-
-    function formatMarkdown(text) {
-      if (!text) return '';
-      let html = escapeHtml(text);
-
-      html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-      html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-      html = html.replace(/^\s*-\s+(.+)$/gm, '<li>$1</li>');
-      html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-
-      return html.split(/\n\n+/).map(p => {
-        if (p.startsWith('<ul>') || p.startsWith('<img')) return p;
-        return `<p>${p.replace(/\n/g, '<br>')}</p>`;
-      }).join('');
-    }
-
-    init();
-  </script>
+  <script src="scripts/scripts.js"></script>
 </body>
 </html>
