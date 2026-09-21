@@ -2,7 +2,7 @@
   {
     "id": 5,
     "title": "Custom Title for What's New Item",
-    "module": null,
+    "module": "Director",
     "closedAt": "2026-09-21T07:06:54Z",
     "categories": [
       "UX/UI"
