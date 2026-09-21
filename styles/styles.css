@@ -343,7 +343,7 @@ h1 {
 
 .no-updates {
   text-align: center;
-  padding: 4rem 1rem;
+  padding: 6rem 1rem;
   background: var(--da-card);
   border-radius: 5px;
   border: 1px solid var(--da-border);
