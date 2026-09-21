@@ -82,8 +82,7 @@ h1 {
 }
 
 .stats-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--da-text-main);
   display: flex;
   align-items: center;
@@ -253,7 +252,6 @@ h1 {
 }
 
 .issue-title {
-  font-size: 1.05rem;
   font-weight: 600;
   color: var(--da-text-main);
   margin: 0;
