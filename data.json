@@ -1,15 +1,6 @@
 [
   "Tables",
-  {
-    "id": 3,
-    "title": "A new collection has been introduced",
-    "module": null,
-    "closedAt": "2026-09-18T11:51:16Z",
-    "categories": [
-      "Feature"
-    ],
-    "resolutionText": ""
-  },
+  "Rankings",
   {
     "id": 2,
     "title": "New feature is available",
