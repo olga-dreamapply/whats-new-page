@@ -216,7 +216,7 @@ h1 {
 }
 
 .tile-content:hover {
-  border-color: var(--da-accent);
+  border-color: #b0e0f5;
 }
 
 .tile-summary {
