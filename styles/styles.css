@@ -281,6 +281,7 @@ h1 {
   background: #fafbfc;
   font-size: 0.95rem;
   color: #334155;
+  font-weight: 350;
 }
 
 .tile-content.open .tile-details {
