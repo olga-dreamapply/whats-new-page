@@ -1,5 +1,15 @@
 [
   {
+    "id": 6,
+    "title": "Delayed email alert delivery",
+    "module": "Notifications",
+    "closedAt": "2026-09-21T12:05:21Z",
+    "categories": [
+      "Bug fix"
+    ],
+    "resolutionText": ""
+  },
+  {
     "id": 5,
     "title": "Enhanced application assignment",
     "module": "Director",
