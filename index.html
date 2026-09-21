@@ -32,7 +32,7 @@
     header {
       background: var(--stripe-card);
       border-bottom: 1px solid var(--stripe-border);
-      padding: 3rem 1.5rem 2rem;
+      padding: 3rem 1.5rem 2.5rem;
     }
 
     .header-content {
@@ -50,21 +50,72 @@
     .subtitle {
       font-size: 1.15rem;
       color: var(--stripe-text-muted);
-      margin: 0 0 1.5rem 0;
+      margin: 0 0 2rem 0;
     }
 
-    /* Stats Banner */
-    .stats-card {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: #f0f3ff;
+    /* Stats Section */
+    .stats-container {
+      background: #f4f6ff;
       border: 1px solid #d0d7ff;
-      padding: 0.6rem 1.25rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .stats-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .stats-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--stripe-text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stats-subtitle {
+      font-size: 0.85rem;
+      color: var(--stripe-text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .stat-box {
+      background: #ffffff;
+      border: 1px solid #e0e6ed;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    .stat-number {
+      font-size: 1.5rem;
+      font-weight: 700;
       color: var(--stripe-accent);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
       font-weight: 600;
+      color: var(--stripe-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-top: 0.2rem;
     }
 
     /* Controls Bar: Year Switcher */
@@ -300,10 +351,38 @@
       <h1>What's new in DreamApply</h1>
       <p class="subtitle">A complete log of product improvements, features, and bug fixes.</p>
       
-      <!-- Stats Block -->
-      <div class="stats-card">
-        <span id="issues-count">0</span> issues resolved this month
+      <!-- Detailed Last Month Stats Section -->
+      <div class="stats-container">
+        <div class="stats-header">
+          <div>
+            <div class="stats-title">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              Product Momentum Report
+            </div>
+            <div class="stats-subtitle" id="stats-month-label">Here is a breakdown of what was shipped last month:</div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-number" id="stat-features">0</div>
+            <div class="stat-label">Features</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="stat-enhancements">0</div>
+            <div class="stat-label">Enhancements</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="stat-ux">0</div>
+            <div class="stat-label">UI/UX Tweaks</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-number" id="stat-bugs">0</div>
+            <div class="stat-label">Bugs Fixed</div>
+          </div>
+        </div>
       </div>
+
     </div>
   </header>
 
@@ -387,24 +466,48 @@
         if (!res.ok) throw new Error("Unable to load data.json");
         allIssues = await res.json();
         
-        updateStats();
+        updateLastMonthStats();
         renderFeed();
       } catch (e) {
         document.getElementById('changelog-feed').innerHTML = '<div class="no-updates">Unable to load changelog data.</div>';
       }
     }
 
-    function updateStats() {
+    function updateLastMonthStats() {
       const now = new Date();
-      const currentMonth = now.getMonth();
-      const currentYear = now.getFullYear();
+      // Calculate previous calendar month & year
+      const targetDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const targetMonth = targetDate.getMonth();
+      const targetYear = targetDate.getFullYear();
 
-      const monthCount = allIssues.filter(issue => {
+      const monthName = targetDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      document.getElementById('stats-month-label').textContent = 
+        `Our engineering team stayed busy continuously improving DreamApply. Here is what was delivered in ${monthName}:`;
+
+      // Filter issues closed in previous month
+      const lastMonthIssues = allIssues.filter(issue => {
         const d = new Date(issue.closedAt);
-        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-      }).length;
+        return d.getMonth() === targetMonth && d.getFullYear() === targetYear;
+      });
 
-      document.getElementById('issues-count').textContent = monthCount;
+      let countFeatures = 0;
+      let countEnhancements = 0;
+      let countUX = 0;
+      let countBugs = 0;
+
+      lastMonthIssues.forEach(issue => {
+        const cats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
+
+        if (cats.some(c => c.includes('feature'))) countFeatures++;
+        if (cats.some(c => c.includes('enhancement'))) countEnhancements++;
+        if (cats.some(c => c.includes('ux') || c.includes('ui'))) countUX++;
+        if (cats.some(c => c.includes('bug'))) countBugs++;
+      });
+
+      document.getElementById('stat-features').textContent = countFeatures;
+      document.getElementById('stat-enhancements').textContent = countEnhancements;
+      document.getElementById('stat-ux').textContent = countUX;
+      document.getElementById('stat-bugs').textContent = countBugs;
     }
 
     function getIssueCategories(issue) {
@@ -427,9 +530,8 @@
         const matchesYear = issueYear === selectedYear;
 
         const issueCats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
-        
-        // Match if issue shares ANY category with the selected checkboxes
         const matchesCategory = issueCats.some(c => selectedCats.includes(c));
+        
         return matchesYear && matchesCategory;
       });
 
@@ -467,9 +569,6 @@
           const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
           const cats = getIssueCategories(issue);
 
-          // BADGE DISPLAY LOGIC:
-          // 1. If [Module] was extracted from title, display module badge.
-          // 2. Otherwise, fall back to displaying the assigned Category label as the badge.
           let badgesHtml = '';
           if (issue.module && issue.module.trim().length > 0) {
             badgesHtml = `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
