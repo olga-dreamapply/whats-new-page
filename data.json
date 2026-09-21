@@ -1,5 +1,15 @@
 [
   {
+    "id": 5,
+    "title": "A new system setting has been introduced!",
+    "module": "Settings",
+    "closedAt": "2026-09-21T07:06:54Z",
+    "categories": [
+      "UX/UI"
+    ],
+    "resolutionText": ""
+  },
+  {
     "id": 4,
     "title": "Another resource was added to the collection",
     "module": "Tables",
