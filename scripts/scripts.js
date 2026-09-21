@@ -9,6 +9,9 @@ async function init() {
 
 function setupYearSwitcher() {
   const container = document.getElementById('year-switcher');
+  if (!container) return;
+
+  container.innerHTML = '';
   const currentYear = new Date().getFullYear();
   
   for (let y = currentYear; y >= 2020; y--) {
@@ -40,22 +43,27 @@ function getSelectedCategories() {
 }
 
 async function fetchChangelog() {
+  const feed = document.getElementById('changelog-feed');
   try {
     const res = await fetch('data.json');
-    if (!res.ok) throw new Error("Unable to load data.json");
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    
     allIssues = await res.json();
     
     updateMonthStats();
     renderFeed();
   } catch (e) {
-    document.getElementById('changelog-feed').innerHTML = '<div class="no-updates">Unable to load changelog data.</div>';
+    console.error("Error fetching changelog:", e);
+    if (feed) {
+      feed.innerHTML = '<div class="no-updates">Unable to load changelog data. Check browser console for details.</div>';
+    }
   }
 }
 
 function updateMonthStats() {
   let targetMonth, targetYear, monthName;
   
-  if (allIssues.length > 0) {
+  if (allIssues && allIssues.length > 0) {
     const latestDate = new Date(allIssues[0].closedAt);
     targetMonth = latestDate.getMonth();
     targetYear = latestDate.getFullYear();
@@ -67,8 +75,10 @@ function updateMonthStats() {
     monthName = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   }
 
-  document.getElementById('stats-month-label').textContent = 
-    `Our engineering team stayed busy continuously improving DreamApply. Here is what was delivered in ${monthName}:`;
+  const labelEl = document.getElementById('stats-month-label');
+  if (labelEl) {
+    labelEl.textContent = `Our engineering team stayed busy continuously improving DreamApply. Here is what was delivered in ${monthName}:`;
+  }
 
   const currentMonthIssues = allIssues.filter(issue => {
     const d = new Date(issue.closedAt);
@@ -91,10 +101,15 @@ function updateMonthStats() {
     });
   });
 
-  document.getElementById('stat-features').textContent = countFeatures;
-  document.getElementById('stat-enhancements').textContent = countEnhancements;
-  document.getElementById('stat-ux').textContent = countUX;
-  document.getElementById('stat-bugs').textContent = countBugs;
+  const featEl = document.getElementById('stat-features');
+  const enhEl = document.getElementById('stat-enhancements');
+  const uxEl = document.getElementById('stat-ux');
+  const bugEl = document.getElementById('stat-bugs');
+
+  if (featEl) featEl.textContent = countFeatures;
+  if (enhEl) enhEl.textContent = countEnhancements;
+  if (uxEl) uxEl.textContent = countUX;
+  if (bugEl) bugEl.textContent = countBugs;
 }
 
 function getIssueCategories(issue) {
@@ -109,6 +124,8 @@ function getIssueCategories(issue) {
 
 function renderFeed() {
   const feed = document.getElementById('changelog-feed');
+  if (!feed) return;
+
   const selectedCats = getSelectedCategories();
 
   const filtered = allIssues.filter(issue => {
@@ -205,6 +222,7 @@ function renderFeed() {
 }
 
 function escapeHtml(str) {
+  if (!str) return '';
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
@@ -224,4 +242,9 @@ function formatMarkdown(text) {
   }).join('');
 }
 
-init();
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
