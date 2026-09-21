@@ -32,7 +32,7 @@
   {
     "id": 1,
     "title": "The initial product release is now available!",
-    "module": "Feature Screenshot",
+    "module": null,
     "closedAt": "2026-09-18T08:16:24Z",
     "categories": [
       "Feature"
