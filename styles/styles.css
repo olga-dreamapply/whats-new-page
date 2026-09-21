@@ -33,7 +33,6 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .header-content {
@@ -76,7 +75,6 @@ h1 {
   border-radius: 5px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .stats-header {
@@ -213,14 +211,12 @@ h1 {
   background: var(--da-card);
   border: 1px solid var(--da-border);
   border-radius: 5px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   overflow: hidden;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .tile-content:hover {
-  border-color: #b0e0f5;
-  box-shadow: 0 4px 12px rgba(0, 146, 208, 0.08);
+  border-color: #e90b8d;
 }
 
 .tile-summary {
@@ -303,7 +299,6 @@ h1 {
   border: 1px solid var(--da-border);
   border-radius: 5px;
   padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .filter-title {
