@@ -1,14 +1,5 @@
 [
-  {
-    "id": 4,
-    "title": "Another resource was added to the collection",
-    "module": null,
-    "closedAt": "2026-09-18T11:54:06Z",
-    "categories": [
-      "Feature"
-    ],
-    "resolutionText": ""
-  },
+  "Tables",
   {
     "id": 3,
     "title": "A new collection has been introduced",
