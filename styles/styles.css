@@ -192,6 +192,22 @@ h1 {
   gap: 3rem;
 }
 
+/* Category Group Heading within Timeline */
+.category-section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--da-accent);
+  margin: 1.25rem 0 0.5rem 0;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--da-border);
+}
+
+.category-section-title:first-child {
+  margin-top: 0;
+}
+
 /* Content Feed & Timeline */
 .changelog-feed {
   position: relative;
