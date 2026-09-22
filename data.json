@@ -50,6 +50,16 @@
     "resolutionText": ""
   },
   {
+    "id": 2,
+    "title": "New feature is available",
+    "module": "AI Highlighter",
+    "closedAt": "2026-09-22T07:30:57Z",
+    "categories": [
+      "UX/UI"
+    ],
+    "resolutionText": "A requested feature has been imlemented today."
+  },
+  {
     "id": 1,
     "title": "The initial product release is now available!",
     "module": null,
