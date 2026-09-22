@@ -23,7 +23,7 @@ function setupYearSwitcher() {
       selectedYear = y;
       document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      isInitialLoad = false; // Disable auto-expand when switching years
+      isInitialLoad = false;
       renderFeed();
     });
     container.appendChild(btn);
@@ -34,7 +34,7 @@ function setupCheckboxFilters() {
   const checkboxes = document.querySelectorAll('#category-filters input[type="checkbox"]');
   checkboxes.forEach(cb => {
     cb.addEventListener('change', () => {
-      isInitialLoad = false; // Disable auto-expand when changing category filters
+      isInitialLoad = false;
       renderFeed();
     });
   });
@@ -125,7 +125,6 @@ function getIssueCategories(issue) {
   return ["General"];
 }
 
-// Map issue category string to standardized display group
 function normalizeCategoryGroup(catStr) {
   const lower = catStr.toLowerCase().trim();
   if (lower.includes('feature')) return 'Features';
@@ -188,10 +187,8 @@ function renderFeed() {
     const stackEl = document.createElement('div');
     stackEl.className = 'tiles-stack';
 
-    // Auto-expand items ONLY if this is initial load and it is the latest date
     const isLatestReleaseDate = (dateLabel === firstDateKey) && isInitialLoad;
 
-    // Group issues by normalized category for this date
     const categoryOrder = ['Features', 'Enhancements', 'Bug fixes', 'UX/UI', 'Updates'];
     const categorizedIssues = {};
 
@@ -204,13 +201,11 @@ function renderFeed() {
       categorizedIssues[groupName].push(issue);
     });
 
-    // Render each active category section in order
     categoryOrder.forEach(categoryName => {
       if (!categorizedIssues[categoryName] || categorizedIssues[categoryName].length === 0) {
-        return; // Skip category if no issues exist for this date
+        return;
       }
 
-      // Add Category Heading
       const sectionHeading = document.createElement('h4');
       sectionHeading.className = 'category-section-title';
       sectionHeading.textContent = categoryName;
@@ -219,7 +214,6 @@ function renderFeed() {
       categorizedIssues[categoryName].forEach(issue => {
         const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
 
-        // Module badge ONLY (Category badge removed per requirement)
         let badgesHtml = '';
         if (issue.module && issue.module.trim().length > 0) {
           badgesHtml = `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
