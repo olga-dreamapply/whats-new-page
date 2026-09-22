@@ -1,5 +1,6 @@
 let allIssues = [];
 let selectedYear = new Date().getFullYear();
+let isInitialLoad = true;
 
 async function init() {
   setupYearSwitcher();
@@ -22,6 +23,7 @@ function setupYearSwitcher() {
       selectedYear = y;
       document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      isInitialLoad = false; // Disable auto-expand when switching years
       renderFeed();
     });
     container.appendChild(btn);
@@ -32,6 +34,7 @@ function setupCheckboxFilters() {
   const checkboxes = document.querySelectorAll('#category-filters input[type="checkbox"]');
   checkboxes.forEach(cb => {
     cb.addEventListener('change', () => {
+      isInitialLoad = false; // Disable auto-expand when changing category filters
       renderFeed();
     });
   });
@@ -122,6 +125,16 @@ function getIssueCategories(issue) {
   return ["General"];
 }
 
+// Map issue category string to standardized display group
+function normalizeCategoryGroup(catStr) {
+  const lower = catStr.toLowerCase().trim();
+  if (lower.includes('feature')) return 'Features';
+  if (lower.includes('enhancement')) return 'Enhancements';
+  if (lower.includes('bug')) return 'Bug fixes';
+  if (lower.includes('ux') || lower.includes('ui')) return 'UX/UI';
+  return 'Updates';
+}
+
 function renderFeed() {
   const feed = document.getElementById('changelog-feed');
   if (!feed) return;
@@ -175,52 +188,75 @@ function renderFeed() {
     const stackEl = document.createElement('div');
     stackEl.className = 'tiles-stack';
 
-    const isLatestReleaseDate = (dateLabel === firstDateKey);
+    // Auto-expand items ONLY if this is initial load and it is the latest date
+    const isLatestReleaseDate = (dateLabel === firstDateKey) && isInitialLoad;
+
+    // Group issues by normalized category for this date
+    const categoryOrder = ['Features', 'Enhancements', 'Bug fixes', 'UX/UI', 'Updates'];
+    const categorizedIssues = {};
 
     groupedByDate[dateLabel].forEach(issue => {
-      const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
-      const cats = getIssueCategories(issue);
-
-      // Amendment 1: Include both Module badge AND Category badges
-      let badgesHtml = '';
-      if (issue.module && issue.module.trim().length > 0) {
-        badgesHtml += `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
+      const mainCat = getIssueCategories(issue)[0] || 'General';
+      const groupName = normalizeCategoryGroup(mainCat);
+      if (!categorizedIssues[groupName]) {
+        categorizedIssues[groupName] = [];
       }
-      badgesHtml += cats.map(c => `<span class="badge">${escapeHtml(c)}</span>`).join('');
+      categorizedIssues[groupName].push(issue);
+    });
 
-      const tileEl = document.createElement('div');
-      
-      // Amendment 2: Expand items of the latest release date by default
-      const shouldExpand = isLatestReleaseDate && hasDetails;
-      tileEl.className = `tile-content ${shouldExpand ? 'open' : ''}`;
+    // Render each active category section in order
+    categoryOrder.forEach(categoryName => {
+      if (!categorizedIssues[categoryName] || categorizedIssues[categoryName].length === 0) {
+        return; // Skip category if no issues exist for this date
+      }
 
-      tileEl.innerHTML = `
-        <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
-          <div>
-            <div class="badge-container">${badgesHtml}</div>
-            <h3 class="issue-title">${escapeHtml(issue.title)}</h3>
+      // Add Category Heading
+      const sectionHeading = document.createElement('h4');
+      sectionHeading.className = 'category-section-title';
+      sectionHeading.textContent = categoryName;
+      stackEl.appendChild(sectionHeading);
+
+      categorizedIssues[categoryName].forEach(issue => {
+        const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
+
+        // Module badge ONLY (Category badge removed per requirement)
+        let badgesHtml = '';
+        if (issue.module && issue.module.trim().length > 0) {
+          badgesHtml = `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
+        }
+
+        const tileEl = document.createElement('div');
+        const shouldExpand = isLatestReleaseDate && hasDetails;
+        tileEl.className = `tile-content ${shouldExpand ? 'open' : ''}`;
+
+        tileEl.innerHTML = `
+          <div class="tile-summary ${hasDetails ? 'expandable' : ''}">
+            <div>
+              ${badgesHtml ? `<div class="badge-container">${badgesHtml}</div>` : ''}
+              <h3 class="issue-title">${escapeHtml(issue.title)}</h3>
+            </div>
+            ${hasDetails ? `
+              <button class="expand-btn" aria-label="Toggle details">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+            ` : ''}
           </div>
           ${hasDetails ? `
-            <button class="expand-btn" aria-label="Toggle details">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
+            <div class="tile-details">
+              ${formatMarkdown(issue.resolutionText)}
+            </div>
           ` : ''}
-        </div>
-        ${hasDetails ? `
-          <div class="tile-details">
-            ${formatMarkdown(issue.resolutionText)}
-          </div>
-        ` : ''}
-      `;
+        `;
 
-      if (hasDetails) {
-        const summaryEl = tileEl.querySelector('.tile-summary');
-        summaryEl.addEventListener('click', () => {
-          tileEl.classList.toggle('open');
-        });
-      }
+        if (hasDetails) {
+          const summaryEl = tileEl.querySelector('.tile-summary');
+          summaryEl.addEventListener('click', () => {
+            tileEl.classList.toggle('open');
+          });
+        }
 
-      stackEl.appendChild(tileEl);
+        stackEl.appendChild(tileEl);
+      });
     });
 
     groupEl.appendChild(dateEl);
