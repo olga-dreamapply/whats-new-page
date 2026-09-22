@@ -35,13 +35,37 @@ header {
   z-index: 100;
 }
 
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Ensures the container spans full width */
+}
+
 .header-content {
-  max-width: 1080px;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 20px;
+    /* Removed: margin: 0 auto; */
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.back-button {
+    color: #fff;
+    display: inline-flex; /* Ensures text and arrow align nicely */
+    align-items: center;
+    font-weight: 300;
+}
+
+.back-button a {
+    color: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.back-button img {
+    padding-right: 5px;
+    height: 10px;
 }
 
 h1 {
@@ -83,7 +107,7 @@ h1 {
 
 .stats-title {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--da-text-main);
   display: flex;
   align-items: center;
@@ -254,7 +278,7 @@ h1 {
 
 .issue-title {
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--da-text-main);
   margin: 0;
 }
