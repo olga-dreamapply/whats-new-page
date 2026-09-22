@@ -10,16 +10,6 @@
     "resolutionText": "To improve integration reliability, failing webhook deliveries will now automatically retry using an exponential backoff schedule (up to 5 attempts). Developers can also inspect full payload delivery logs and HTTP response status codes directly from the Developer Console."
   },
   {
-    "id": 6,
-    "title": "Resolved email queue processing bottlenecks",
-    "module": "Notifications",
-    "closedAt": "2026-09-21T12:05:21Z",
-    "categories": [
-      "Bug fix"
-    ],
-    "resolutionText": "Fixed an issue where automated system notifications and password reset requests experienced delivery delays during peak usage hours. Email processing queue capacity has been increased, reducing delivery latency to under 3 seconds."
-  },
-  {
     "id": 5,
     "title": "Enhanced application assignment",
     "module": "Director",
