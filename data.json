@@ -1,6 +1,17 @@
 {
   "published": [
     {
+      "id": 10,
+      "title": "A new setting has been added",
+      "module": "Settings",
+      "closedAt": "2026-09-23T08:17:05Z",
+      "inProductionAt": "2026-09-23T08:17:05Z",
+      "categories": [
+        "Enhancement"
+      ],
+      "resolutionText": "Some info here"
+    },
+    {
       "id": 7,
       "title": "Automated webhook retries and endpoint monitoring",
       "module": "API",
