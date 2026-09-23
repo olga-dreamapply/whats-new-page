@@ -80,17 +80,6 @@
   ],
   "roadmap": [
     {
-      "id": 9,
-      "title": "Another amazing feature is added to the roadmap",
-      "module": "Settings",
-      "closedAt": "2026-09-23T08:09:42Z",
-      "inProductionAt": "2026-09-23T08:09:42Z",
-      "categories": [
-        "UX/UI"
-      ],
-      "resolutionText": "Some details about the upcoming feature"
-    },
-    {
       "id": 8,
       "title": "New amazing feature is coming soon!",
       "module": null,
