@@ -78,5 +78,17 @@
       "resolutionText": "Here is a brief description of the new feature and how to use it.\n\n![Feature Screenshot](https://help.dreamapply.com/kb/get-started/images/select-offers.png)"
     }
   ],
-  "roadmap": []
+  "roadmap": [
+    {
+      "id": 9,
+      "title": "Another amazing feature is added to the roadmap",
+      "module": "Settings",
+      "closedAt": "2026-09-23T08:16:09Z",
+      "inProductionAt": "2026-09-23T08:16:09Z",
+      "categories": [
+        "UX/UI"
+      ],
+      "resolutionText": "Some details about the upcoming feature"
+    }
+  ]
 }
