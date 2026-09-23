@@ -1,6 +1,6 @@
 let allIssues = [];
 let roadmapIssues = [];
-let selectedView = new Date().getFullYear().toString();
+let selectedView = new Date().getFullYear().toString(); // Default to current year
 let isInitialLoad = true;
 
 async function init() {
@@ -16,19 +16,21 @@ function setupYearSwitcher() {
   container.innerHTML = '';
   const currentYear = new Date().getFullYear();
 
-  // 1. "Coming soon" button on the far left
-  const comingSoonBtn = document.createElement('button');
-  comingSoonBtn.className = `year-btn roadmap-btn ${selectedView === 'roadmap' ? 'active' : ''}`;
-  comingSoonBtn.textContent = 'Coming soon';
-  comingSoonBtn.addEventListener('click', () => {
-    selectedView = 'roadmap';
-    updateActiveButton(comingSoonBtn);
-    isInitialLoad = false;
-    renderFeed();
-  });
-  container.appendChild(comingSoonBtn);
+  // 1. Conditionally add "Coming soon" button ONLY if roadmap issues exist
+  if (roadmapIssues && roadmapIssues.length > 0) {
+    const comingSoonBtn = document.createElement('button');
+    comingSoonBtn.className = `year-btn roadmap-btn ${selectedView === 'roadmap' ? 'active' : ''}`;
+    comingSoonBtn.textContent = 'Coming soon';
+    comingSoonBtn.addEventListener('click', () => {
+      selectedView = 'roadmap';
+      updateActiveButton(comingSoonBtn);
+      isInitialLoad = false;
+      renderFeed();
+    });
+    container.appendChild(comingSoonBtn);
+  }
 
-  // 2. Year buttons
+  // 2. Add Year buttons
   for (let y = currentYear; y >= 2020; y--) {
     const btn = document.createElement('button');
     btn.className = `year-btn ${selectedView === y.toString() ? 'active' : ''}`;
@@ -197,7 +199,7 @@ function renderFeed() {
 
   const groupedByDate = {};
   filtered.forEach(issue => {
-    let dateKey = 'Roadmap';
+    let dateKey = 'Coming soon';
     if (!isRoadmapMode) {
       const dateObj = new Date(issue.inProductionAt || issue.closedAt);
       dateKey = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -251,7 +253,6 @@ function renderFeed() {
       stackEl.appendChild(sectionHeading);
 
       categorizedIssues[categoryName].forEach(issue => {
-        // Robust check for expandable details text
         const rawDetails = (issue.resolutionText || '').trim();
         const hasDetails = rawDetails.length > 0;
 
