@@ -1,11 +1,12 @@
 let allIssues = [];
-let selectedYear = new Date().getFullYear();
+let roadmapIssues = [];
+let selectedView = new Date().getFullYear().toString(); // Default: Current year string
 let isInitialLoad = true;
 
 async function init() {
+  await fetchChangelog();
   setupYearSwitcher();
   setupCheckboxFilters();
-  await fetchChangelog();
 }
 
 function setupYearSwitcher() {
@@ -14,27 +15,45 @@ function setupYearSwitcher() {
 
   container.innerHTML = '';
   const currentYear = new Date().getFullYear();
-  
+
+  // 1. Add "Coming soon" button to the far left
+  const comingSoonBtn = document.createElement('button');
+  comingSoonBtn.className = `year-btn roadmap-btn ${selectedView === 'roadmap' ? 'active' : ''}`;
+  comingSoonBtn.textContent = 'Coming soon';
+  comingSoonBtn.addEventListener('click', () => {
+    selectedView = 'roadmap';
+    updateActiveButton(comingSoonBtn);
+    isInitialLoad = false;
+    renderFeed();
+  });
+  container.appendChild(comingSoonBtn);
+
+  // 2. Add Year buttons (Current year is selected by default)
   for (let y = currentYear; y >= 2020; y--) {
     const btn = document.createElement('button');
-    btn.className = `year-btn ${y === selectedYear ? 'active' : ''}`;
+    const isCurrentYear = (y === currentYear);
+    btn.className = `year-btn ${selectedView === y.toString() ? 'active' : ''}`;
     btn.textContent = y;
     btn.addEventListener('click', () => {
-      selectedYear = y;
-      document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      isInitialLoad = false; // Disable auto-expand when switching years
+      selectedView = y.toString();
+      updateActiveButton(btn);
+      isInitialLoad = false;
       renderFeed();
     });
     container.appendChild(btn);
   }
 }
 
+function updateActiveButton(activeBtn) {
+  document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+  activeBtn.classList.add('active');
+}
+
 function setupCheckboxFilters() {
   const checkboxes = document.querySelectorAll('#category-filters input[type="checkbox"]');
   checkboxes.forEach(cb => {
     cb.addEventListener('change', () => {
-      isInitialLoad = false; // Disable auto-expand when changing category filters
+      isInitialLoad = false;
       renderFeed();
     });
   });
@@ -51,8 +70,17 @@ async function fetchChangelog() {
     const res = await fetch('data.json');
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     
-    allIssues = await res.json();
+    const data = await res.json();
     
+    // Support structured format or fallback array format
+    if (data.published || data.roadmap) {
+      allIssues = data.published || [];
+      roadmapIssues = data.roadmap || [];
+    } else if (Array.isArray(data)) {
+      allIssues = data;
+      roadmapIssues = [];
+    }
+
     updateMonthStats();
     renderFeed();
   } catch (e) {
@@ -67,7 +95,7 @@ function updateMonthStats() {
   let targetMonth, targetYear, monthName;
   
   if (allIssues && allIssues.length > 0) {
-    const latestDate = new Date(allIssues[0].closedAt);
+    const latestDate = new Date(allIssues[0].inProductionAt || allIssues[0].closedAt);
     targetMonth = latestDate.getMonth();
     targetYear = latestDate.getFullYear();
     monthName = latestDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -84,7 +112,7 @@ function updateMonthStats() {
   }
 
   const currentMonthIssues = allIssues.filter(issue => {
-    const d = new Date(issue.closedAt);
+    const d = new Date(issue.inProductionAt || issue.closedAt);
     return d.getMonth() === targetMonth && d.getFullYear() === targetYear;
   });
 
@@ -125,7 +153,6 @@ function getIssueCategories(issue) {
   return ["General"];
 }
 
-// Map issue category string to standardized display group
 function normalizeCategoryGroup(catStr) {
   const lower = catStr.toLowerCase().trim();
   if (lower.includes('feature')) return 'Features';
@@ -141,9 +168,16 @@ function renderFeed() {
 
   const selectedCats = getSelectedCategories();
 
-  const filtered = allIssues.filter(issue => {
-    const issueYear = new Date(issue.closedAt).getFullYear();
-    const matchesYear = issueYear === selectedYear;
+  // Determine active dataset (Roadmap vs Published Year)
+  const isRoadmapMode = selectedView === 'roadmap';
+  const targetDataset = isRoadmapMode ? roadmapIssues : allIssues;
+
+  const filtered = targetDataset.filter(issue => {
+    let matchesTime = true;
+    if (!isRoadmapMode) {
+      const issueYear = new Date(issue.inProductionAt || issue.closedAt).getFullYear();
+      matchesTime = (issueYear.toString() === selectedView);
+    }
 
     const issueCats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
     const matchesCategory = issueCats.some(c => {
@@ -154,18 +188,24 @@ function renderFeed() {
       return selectedCats.includes(c);
     });
     
-    return matchesYear && matchesCategory;
+    return matchesTime && matchesCategory;
   });
 
   if (filtered.length === 0) {
-    feed.innerHTML = `<div class="no-updates">No updates found for ${selectedYear} matching selected categories.</div>`;
+    const emptyLabel = isRoadmapMode ? 'coming soon items' : `updates for ${selectedView}`;
+    feed.innerHTML = `<div class="no-updates">No ${emptyLabel} matching selected categories.</div>`;
     return;
   }
 
+  // Group by date (or "In Development" for roadmap items)
   const groupedByDate = {};
   filtered.forEach(issue => {
-    const dateObj = new Date(issue.closedAt);
-    const dateKey = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    let dateKey = 'Coming soon';
+    if (!isRoadmapMode) {
+      const dateObj = new Date(issue.inProductionAt || issue.closedAt);
+      dateKey = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
     if (!groupedByDate[dateKey]) {
       groupedByDate[dateKey] = [];
     }
@@ -188,10 +228,8 @@ function renderFeed() {
     const stackEl = document.createElement('div');
     stackEl.className = 'tiles-stack';
 
-    // Auto-expand items ONLY if this is initial load and it is the latest date
-    const isLatestReleaseDate = (dateLabel === firstDateKey) && isInitialLoad;
+    const isLatestReleaseDate = (dateLabel === firstDateKey) && isInitialLoad && !isRoadmapMode;
 
-    // Group issues by normalized category for this date
     const categoryOrder = ['Features', 'Enhancements', 'Bug fixes', 'UX/UI', 'Updates'];
     const categorizedIssues = {};
 
@@ -204,13 +242,11 @@ function renderFeed() {
       categorizedIssues[groupName].push(issue);
     });
 
-    // Render each active category section in order
     categoryOrder.forEach(categoryName => {
       if (!categorizedIssues[categoryName] || categorizedIssues[categoryName].length === 0) {
-        return; // Skip category if no issues exist for this date
+        return;
       }
 
-      // Add Category Heading
       const sectionHeading = document.createElement('h4');
       sectionHeading.className = 'category-section-title';
       sectionHeading.textContent = categoryName;
@@ -219,7 +255,6 @@ function renderFeed() {
       categorizedIssues[categoryName].forEach(issue => {
         const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
 
-        // Module badge ONLY (Category badge removed per requirement)
         let badgesHtml = '';
         if (issue.module && issue.module.trim().length > 0) {
           badgesHtml = `<span class="badge badge-module">${escapeHtml(issue.module)}</span>`;
