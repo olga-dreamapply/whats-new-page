@@ -1,6 +1,6 @@
 let allIssues = [];
 let roadmapIssues = [];
-let selectedView = new Date().getFullYear().toString(); // Default: Current year string
+let selectedView = new Date().getFullYear().toString();
 let isInitialLoad = true;
 
 async function init() {
@@ -16,7 +16,7 @@ function setupYearSwitcher() {
   container.innerHTML = '';
   const currentYear = new Date().getFullYear();
 
-  // 1. Add "Coming soon" button to the far left
+  // 1. "Coming soon" button on the far left
   const comingSoonBtn = document.createElement('button');
   comingSoonBtn.className = `year-btn roadmap-btn ${selectedView === 'roadmap' ? 'active' : ''}`;
   comingSoonBtn.textContent = 'Coming soon';
@@ -28,7 +28,7 @@ function setupYearSwitcher() {
   });
   container.appendChild(comingSoonBtn);
 
-  // 2. Add Year buttons
+  // 2. Year buttons
   for (let y = currentYear; y >= 2020; y--) {
     const btn = document.createElement('button');
     btn.className = `year-btn ${selectedView === y.toString() ? 'active' : ''}`;
@@ -176,8 +176,6 @@ function renderFeed() {
     }
 
     const issueCats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
-    
-    // If issue has no specific category or "general", allow it to show when any filter is active
     const isGeneral = issueCats.some(c => c === 'general' || c === '');
     
     const matchesCategory = isGeneral || issueCats.some(c => {
@@ -227,6 +225,7 @@ function renderFeed() {
     const stackEl = document.createElement('div');
     stackEl.className = 'tiles-stack';
 
+    // Auto-expand top release group ONLY on initial page load
     const isLatestReleaseDate = (dateLabel === firstDateKey) && isInitialLoad && !isRoadmapMode;
 
     const categoryOrder = ['Features', 'Enhancements', 'Bug fixes', 'UX/UI', 'Updates'];
@@ -252,7 +251,9 @@ function renderFeed() {
       stackEl.appendChild(sectionHeading);
 
       categorizedIssues[categoryName].forEach(issue => {
-        const hasDetails = issue.resolutionText && issue.resolutionText.trim().length > 0;
+        // Robust check for expandable details text
+        const rawDetails = (issue.resolutionText || '').trim();
+        const hasDetails = rawDetails.length > 0;
 
         let badgesHtml = '';
         if (issue.module && issue.module.trim().length > 0) {
@@ -277,7 +278,7 @@ function renderFeed() {
           </div>
           ${hasDetails ? `
             <div class="tile-details">
-              ${formatMarkdown(issue.resolutionText)}
+              ${formatMarkdown(rawDetails)}
             </div>
           ` : ''}
         `;
