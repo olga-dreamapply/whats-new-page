@@ -12,6 +12,17 @@
       "resolutionText": "Some info here"
     },
     {
+      "id": 7,
+      "title": "Automated webhook retries and endpoint monitoring",
+      "module": "API",
+      "closedAt": "2026-09-22T06:56:13Z",
+      "inProductionAt": "2026-09-22T06:56:13Z",
+      "categories": [
+        "Enhancement"
+      ],
+      "resolutionText": "To improve integration reliability, failing webhook deliveries will now automatically retry using an exponential backoff schedule (up to 5 attempts). Developers can also inspect full payload delivery logs and HTTP response status codes directly from the Developer Console."
+    },
+    {
       "id": 6,
       "title": "Resolved email queue processing bottlenecks",
       "module": "Notifications",
