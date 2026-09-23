@@ -28,10 +28,9 @@ function setupYearSwitcher() {
   });
   container.appendChild(comingSoonBtn);
 
-  // 2. Add Year buttons (Current year is selected by default)
+  // 2. Add Year buttons
   for (let y = currentYear; y >= 2020; y--) {
     const btn = document.createElement('button');
-    const isCurrentYear = (y === currentYear);
     btn.className = `year-btn ${selectedView === y.toString() ? 'active' : ''}`;
     btn.textContent = y;
     btn.addEventListener('click', () => {
@@ -72,7 +71,6 @@ async function fetchChangelog() {
     
     const data = await res.json();
     
-    // Support structured format or fallback array format
     if (data.published || data.roadmap) {
       allIssues = data.published || [];
       roadmapIssues = data.roadmap || [];
@@ -167,8 +165,6 @@ function renderFeed() {
   if (!feed) return;
 
   const selectedCats = getSelectedCategories();
-
-  // Determine active dataset (Roadmap vs Published Year)
   const isRoadmapMode = selectedView === 'roadmap';
   const targetDataset = isRoadmapMode ? roadmapIssues : allIssues;
 
@@ -180,7 +176,11 @@ function renderFeed() {
     }
 
     const issueCats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
-    const matchesCategory = issueCats.some(c => {
+    
+    // If issue has no specific category or "general", allow it to show when any filter is active
+    const isGeneral = issueCats.some(c => c === 'general' || c === '');
+    
+    const matchesCategory = isGeneral || issueCats.some(c => {
       if (c.includes('feature') && selectedCats.includes('feature')) return true;
       if (c.includes('enhancement') && selectedCats.includes('enhancement')) return true;
       if ((c.includes('ux') || c.includes('ui')) && selectedCats.includes('ux/ui')) return true;
@@ -197,7 +197,6 @@ function renderFeed() {
     return;
   }
 
-  // Group by date (or "In Development" for roadmap items)
   const groupedByDate = {};
   filtered.forEach(issue => {
     let dateKey = 'Coming soon';
