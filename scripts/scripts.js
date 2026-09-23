@@ -199,7 +199,7 @@ function renderFeed() {
 
   const groupedByDate = {};
   filtered.forEach(issue => {
-    let dateKey = 'Coming soon';
+    let dateKey = 'Roadmap';
     if (!isRoadmapMode) {
       const dateObj = new Date(issue.inProductionAt || issue.closedAt);
       dateKey = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
