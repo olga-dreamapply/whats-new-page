@@ -1,72 +1,94 @@
-[
-  {
-    "id": 7,
-    "title": "Automated webhook retries and endpoint monitoring",
-    "module": "API",
-    "closedAt": "2026-09-22T06:56:13Z",
-    "categories": [
-      "Enhancement"
-    ],
-    "resolutionText": "To improve integration reliability, failing webhook deliveries will now automatically retry using an exponential backoff schedule (up to 5 attempts). Developers can also inspect full payload delivery logs and HTTP response status codes directly from the Developer Console."
-  },
-  {
-    "id": 6,
-    "title": "Resolved email queue processing bottlenecks",
-    "module": "Notifications",
-    "closedAt": "2026-09-22T07:00:59Z",
-    "categories": [
-      "Bug fix"
-    ],
-    "resolutionText": "Fixed an issue where automated system notifications and password reset requests experienced delivery delays during peak usage hours. Email processing queue capacity has been increased, reducing delivery latency to under 3 seconds."
-  },
-  {
-    "id": 5,
-    "title": "Enhanced application assignment",
-    "module": "Director",
-    "closedAt": "2026-09-21T07:06:54Z",
-    "categories": [
-      "Enhancement"
-    ],
-    "resolutionText": "The application assignment mechanism includes updates that offer greater flexibility to institutions and Administrators:\n\n- [Workload and supervisor settings](https://help.dreamapply.com/kb/users/administrator-roles/manage-accounts/#add-administrator-accounts): The **Workload %** setting and **Supervisor/Mentor** selection are now located on the Administrator account setup page.\n- [New rule actions](https://help.dreamapply.com/kb/enrollment/review/assign-applications/use-rules/): Additional assignment actions are available. You can now configure rules to assign an Administrator from a preconfigured pool or assign an Administrator with a specific role.\n- [Bulk Administrator assignment](https://help.dreamapply.com/kb/enrollment/review/assign-applications/manually-assign/#assign-applications-in-bulk): You can now assign or unassign Administrators to or from applications in bulk.\n\n![Bulk application assignment](https://help.dreamapply.com/kb/get-started/images/select-offers.png)"
-  },
-  {
-    "id": 4,
-    "title": "Another resource was added to the collection",
-    "module": "Tables",
-    "closedAt": "2026-09-18T11:54:06Z",
-    "categories": [
-      "Feature"
-    ],
-    "resolutionText": ""
-  },
-  {
-    "id": 3,
-    "title": "A new collection has been introduced",
-    "module": "Rankings",
-    "closedAt": "2026-09-18T11:51:16Z",
-    "categories": [
-      "Feature"
-    ],
-    "resolutionText": ""
-  },
-  {
-    "id": 2,
-    "title": "New feature is available",
-    "module": "AI Highlighter",
-    "closedAt": "2026-09-22T07:30:57Z",
-    "categories": [
-      "UX/UI"
-    ],
-    "resolutionText": "A requested feature has been imlemented today."
-  },
-  {
-    "id": 1,
-    "title": "The initial product release is now available!",
-    "module": null,
-    "closedAt": "2026-09-18T08:16:24Z",
-    "categories": [
-      "Feature"
-    ],
-    "resolutionText": "Here is a brief description of the new feature and how to use it.\n\n![Feature Screenshot](https://help.dreamapply.com/kb/get-started/images/select-offers.png)"
-  }
-]
+{
+  "published": [
+    {
+      "id": 7,
+      "title": "Automated webhook retries and endpoint monitoring",
+      "module": "API",
+      "closedAt": "2026-09-22T06:56:13Z",
+      "inProductionAt": "2026-09-22T06:56:13Z",
+      "categories": [
+        "Enhancement"
+      ],
+      "resolutionText": "To improve integration reliability, failing webhook deliveries will now automatically retry using an exponential backoff schedule (up to 5 attempts). Developers can also inspect full payload delivery logs and HTTP response status codes directly from the Developer Console."
+    },
+    {
+      "id": 6,
+      "title": "Resolved email queue processing bottlenecks",
+      "module": "Notifications",
+      "closedAt": "2026-09-22T07:00:59Z",
+      "inProductionAt": "2026-09-22T07:00:59Z",
+      "categories": [
+        "Bug fix"
+      ],
+      "resolutionText": "Fixed an issue where automated system notifications and password reset requests experienced delivery delays during peak usage hours. Email processing queue capacity has been increased, reducing delivery latency to under 3 seconds."
+    },
+    {
+      "id": 5,
+      "title": "Enhanced application assignment",
+      "module": "Director",
+      "closedAt": "2026-09-21T07:06:54Z",
+      "inProductionAt": "2026-09-21T07:06:54Z",
+      "categories": [
+        "Enhancement"
+      ],
+      "resolutionText": "The application assignment mechanism includes updates that offer greater flexibility to institutions and Administrators:\n\n- [Workload and supervisor settings](https://help.dreamapply.com/kb/users/administrator-roles/manage-accounts/#add-administrator-accounts): The **Workload %** setting and **Supervisor/Mentor** selection are now located on the Administrator account setup page.\n- [New rule actions](https://help.dreamapply.com/kb/enrollment/review/assign-applications/use-rules/): Additional assignment actions are available. You can now configure rules to assign an Administrator from a preconfigured pool or assign an Administrator with a specific role.\n- [Bulk Administrator assignment](https://help.dreamapply.com/kb/enrollment/review/assign-applications/manually-assign/#assign-applications-in-bulk): You can now assign or unassign Administrators to or from applications in bulk.\n\n![Bulk application assignment](https://help.dreamapply.com/kb/get-started/images/select-offers.png)"
+    },
+    {
+      "id": 4,
+      "title": "Another resource was added to the collection",
+      "module": "Tables",
+      "closedAt": "2026-09-18T11:54:06Z",
+      "inProductionAt": "2026-09-18T11:54:06Z",
+      "categories": [
+        "Feature"
+      ],
+      "resolutionText": ""
+    },
+    {
+      "id": 3,
+      "title": "A new collection has been introduced",
+      "module": "Rankings",
+      "closedAt": "2026-09-18T11:51:16Z",
+      "inProductionAt": "2026-09-18T11:51:16Z",
+      "categories": [
+        "Feature"
+      ],
+      "resolutionText": ""
+    },
+    {
+      "id": 2,
+      "title": "New feature is available",
+      "module": "AI Highlighter",
+      "closedAt": "2026-09-22T07:30:57Z",
+      "inProductionAt": "2026-09-22T07:30:57Z",
+      "categories": [
+        "UX/UI"
+      ],
+      "resolutionText": "A requested feature has been imlemented today."
+    },
+    {
+      "id": 1,
+      "title": "The initial product release is now available!",
+      "module": null,
+      "closedAt": "2026-09-18T08:16:24Z",
+      "inProductionAt": "2026-09-18T08:16:24Z",
+      "categories": [
+        "Feature"
+      ],
+      "resolutionText": "Here is a brief description of the new feature and how to use it.\n\n![Feature Screenshot](https://help.dreamapply.com/kb/get-started/images/select-offers.png)"
+    }
+  ],
+  "roadmap": [
+    {
+      "id": 8,
+      "title": "New amazing feature is coming soon!",
+      "module": null,
+      "closedAt": "2026-09-23T07:43:41Z",
+      "inProductionAt": "2026-09-23T07:43:41Z",
+      "categories": [
+        "General"
+      ],
+      "resolutionText": ""
+    }
+  ]
+}
