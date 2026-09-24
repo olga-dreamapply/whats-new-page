@@ -9,6 +9,12 @@ async function init() {
   setupCheckboxFilters();
 }
 
+// Helper to extract query parameters from the URL
+function getUrlParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
 function setupYearSwitcher() {
   const container = document.getElementById('year-switcher');
   if (!container) return;
@@ -169,12 +175,22 @@ function renderFeed() {
   const selectedCats = getSelectedCategories();
   const isRoadmapMode = selectedView === 'roadmap';
   const targetDataset = isRoadmapMode ? roadmapIssues : allIssues;
+  
+  // Read module filter from URL parameters (e.g. ?module=api)
+  const targetModule = getUrlParam('module')?.toLowerCase().trim();
 
   const filtered = targetDataset.filter(issue => {
     let matchesTime = true;
     if (!isRoadmapMode) {
       const issueYear = new Date(issue.inProductionAt || issue.closedAt).getFullYear();
       matchesTime = (issueYear.toString() === selectedView);
+    }
+
+    // Module URL Parameter Check
+    let matchesModule = true;
+    if (targetModule) {
+      const issueModule = (issue.module || '').toLowerCase().trim();
+      matchesModule = issueModule === targetModule;
     }
 
     const issueCats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
@@ -188,12 +204,13 @@ function renderFeed() {
       return selectedCats.includes(c);
     });
     
-    return matchesTime && matchesCategory;
+    return matchesTime && matchesModule && matchesCategory;
   });
 
   if (filtered.length === 0) {
     const emptyLabel = isRoadmapMode ? 'coming soon items' : `updates for ${selectedView}`;
-    feed.innerHTML = `<div class="no-updates">No ${emptyLabel} matching selected categories.</div>`;
+    const moduleNotice = targetModule ? ` in module "${targetModule.toUpperCase()}"` : '';
+    feed.innerHTML = `<div class="no-updates">No ${emptyLabel}${moduleNotice} matching selected categories.</div>`;
     return;
   }
 
