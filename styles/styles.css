@@ -185,6 +185,12 @@ h1 {
   border-color: var(--da-accent);
 }
 
+.roadmap-btn.active {
+  background: var(--da-text-muted);
+  color: #ffffff;
+  border-color: var(--da-text-muted);
+}
+
 /* Layout Grid */
 .main-container {
   display: grid;
