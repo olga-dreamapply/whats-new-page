@@ -91,6 +91,17 @@
   ],
   "roadmap": [
     {
+      "id": 8,
+      "title": "New amazing feature is coming soon!",
+      "module": null,
+      "closedAt": "2026-09-24T06:17:54Z",
+      "inProductionAt": "2026-09-24T06:17:54Z",
+      "categories": [
+        "Bug fix"
+      ],
+      "resolutionText": ""
+    },
+    {
       "id": 9,
       "title": "Another amazing feature is added to the roadmap",
       "module": "Settings",
