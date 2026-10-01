@@ -1,6 +1,17 @@
 {
   "published": [
     {
+      "id": 11,
+      "title": "New October release is coming",
+      "module": null,
+      "closedAt": "2026-10-01T13:11:02Z",
+      "inProductionAt": "2026-10-01T13:10:58Z",
+      "categories": [
+        "UX/UI"
+      ],
+      "resolutionText": ""
+    },
+    {
       "id": 3,
       "title": "A new collection has been introduced",
       "module": "Rankings",
