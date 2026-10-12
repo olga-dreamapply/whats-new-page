@@ -198,7 +198,7 @@ function formatFullDate(dateStr) {
   if (isNaN(dateObj.getTime())) return dateStr;
   
   return dateObj.toLocaleDateString('en-US', {
-    month: 'long',
+    month: 'short',
     day: 'numeric',
     year: 'numeric'
   });
