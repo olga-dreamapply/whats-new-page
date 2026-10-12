@@ -5,14 +5,35 @@ let isInitialLoad = true;
 
 async function init() {
   await fetchChangelog();
+  setupModuleParamNotice();
   setupYearSwitcher();
   setupCheckboxFilters();
 }
 
-// Helper to extract query parameters from the URL
+// Utility: Read query params from URL
 function getUrlParam(param) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
+}
+
+// Configure "View all release notes" reset link if ?module= parameter is present
+function setupModuleParamNotice() {
+  const moduleParam = getUrlParam('module');
+  const noticeEl = document.getElementById('module-filter-notice');
+  const textEl = document.getElementById('module-filter-text');
+  const clearLink = document.getElementById('clear-module-filter');
+
+  if (moduleParam && noticeEl && textEl && clearLink) {
+    textEl.innerHTML = `Showing updates for module: <strong>${escapeHtml(moduleParam.toUpperCase())}</strong>`;
+    noticeEl.style.display = 'flex';
+
+    clearLink.addEventListener('click', () => {
+      // Remove 'module' parameter and reload page cleanly
+      const url = new URL(window.location.href);
+      url.searchParams.delete('module');
+      window.location.href = url.pathname + url.search;
+    });
+  }
 }
 
 function setupYearSwitcher() {
@@ -138,11 +159,13 @@ function updateMonthStats() {
     });
   });
 
+  const totalEl = document.getElementById('stat-total');
   const featEl = document.getElementById('stat-features');
   const enhEl = document.getElementById('stat-enhancements');
   const uxEl = document.getElementById('stat-ux');
   const bugEl = document.getElementById('stat-bugs');
 
+  if (totalEl) totalEl.textContent = currentMonthIssues.length;
   if (featEl) featEl.textContent = countFeatures;
   if (enhEl) enhEl.textContent = countEnhancements;
   if (uxEl) uxEl.textContent = countUX;
@@ -168,6 +191,19 @@ function normalizeCategoryGroup(catStr) {
   return 'Updates';
 }
 
+// Format date into full string: "October 12, 2026"
+function formatFullDate(dateStr) {
+  if (!dateStr) return 'Roadmap';
+  const dateObj = new Date(dateStr);
+  if (isNaN(dateObj.getTime())) return dateStr;
+  
+  return dateObj.toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+}
+
 function renderFeed() {
   const feed = document.getElementById('changelog-feed');
   if (!feed) return;
@@ -176,7 +212,7 @@ function renderFeed() {
   const isRoadmapMode = selectedView === 'roadmap';
   const targetDataset = isRoadmapMode ? roadmapIssues : allIssues;
   
-  // Read module filter from URL parameters (e.g. ?module=api)
+  // Read module URL parameter (e.g., ?module=api)
   const targetModule = getUrlParam('module')?.toLowerCase().trim();
 
   const filtered = targetDataset.filter(issue => {
@@ -186,7 +222,7 @@ function renderFeed() {
       matchesTime = (issueYear.toString() === selectedView);
     }
 
-    // Module URL Parameter Check
+    // Module parameter filter
     let matchesModule = true;
     if (targetModule) {
       const issueModule = (issue.module || '').toLowerCase().trim();
@@ -218,8 +254,7 @@ function renderFeed() {
   filtered.forEach(issue => {
     let dateKey = 'Roadmap';
     if (!isRoadmapMode) {
-      const dateObj = new Date(issue.inProductionAt || issue.closedAt);
-      dateKey = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      dateKey = formatFullDate(issue.inProductionAt || issue.closedAt);
     }
 
     if (!groupedByDate[dateKey]) {
