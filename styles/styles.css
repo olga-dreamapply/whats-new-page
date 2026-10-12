@@ -127,7 +127,7 @@ h1 {
 }
 
 .timeline-date {
-  text-align: right;
+  text-align: left;
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--da-accent);
