@@ -198,9 +198,10 @@ h1 {
 }
 
 .badge-module {
-  color: var(--da-accent);
-  border: 1px solid #d0e8f5;
-  background: #f0f7fb;
+  color: #64748b;
+  background: var(--da-primary);
+  border: 1px solid var(--da-border);
+  border-radius: 50px;
 }
 
 .issue-title {
