@@ -1,6 +1,17 @@
 {
   "published": [
     {
+      "id": 12,
+      "title": "The ability to submit applications was introduced",
+      "module": "API",
+      "closedAt": "2026-10-12T08:10:45Z",
+      "inProductionAt": "2026-10-12T08:10:43Z",
+      "categories": [
+        "Feature"
+      ],
+      "resolutionText": "Added the ability to submit an application using the DreamApply API. For details, see POST [/api/v10/applications/ID/submit](https://help.dreamapply.com/api/api_applications_id_submit/#post)."
+    },
+    {
       "id": 11,
       "title": "New October release is coming",
       "module": null,
