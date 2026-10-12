@@ -228,8 +228,6 @@ h1 {
 .tile-details {
   display: none;
   padding: 0 1.25rem 1.25rem;
-  border-top: 1px solid var(--da-border);
-  background: #fafbfc;
   font-size: 0.92rem;
   color: #334155;
   font-weight: 350;
