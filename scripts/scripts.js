@@ -119,47 +119,55 @@ async function fetchChangelog() {
 }
 
 function updateMonthStats() {
-  let targetMonth, targetYear, monthName;
-  
-  // 1. Filter issues by URL module parameter if present
   const targetModule = getUrlParam('module')?.toLowerCase().trim();
-  const datasetForStats = allIssues.filter(issue => {
-    if (!targetModule) return true;
-    const issueModule = (issue.module || '').toLowerCase().trim();
-    return issueModule === targetModule;
-  });
+  
+  // 1. Update Stats Section Title based on module presence
+  const statsTitleEl = document.querySelector('.stats-title');
+  if (statsTitleEl) {
+    const titleText = targetModule ? 'Stats in brief' : 'Last month in brief';
+    statsTitleEl.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      ${titleText}
+    `;
+  }
 
-  // 2. Determine target month/year based on filtered dataset
-  if (datasetForStats && datasetForStats.length > 0) {
-    const latestDate = new Date(datasetForStats[0].inProductionAt || datasetForStats[0].closedAt);
-    targetMonth = latestDate.getMonth();
-    targetYear = latestDate.getFullYear();
-    monthName = latestDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  let issuesForStats = [];
+
+  if (targetModule) {
+    // 2. Module param present: calculate stats for ALL displayed items matching this module
+    issuesForStats = allIssues.filter(issue => {
+      const issueModule = (issue.module || '').toLowerCase().trim();
+      return issueModule === targetModule;
+    });
   } else {
-    const now = new Date();
-    targetMonth = now.getMonth();
-    targetYear = now.getFullYear();
-    monthName = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    // 3. No module param: calculate stats for the latest release month
+    let targetMonth, targetYear;
+    if (allIssues && allIssues.length > 0) {
+      const latestDate = new Date(allIssues[0].inProductionAt || allIssues[0].closedAt);
+      targetMonth = latestDate.getMonth();
+      targetYear = latestDate.getFullYear();
+    } else {
+      const now = new Date();
+      targetMonth = now.getMonth();
+      targetYear = now.getFullYear();
+    }
+
+    issuesForStats = allIssues.filter(issue => {
+      const d = new Date(issue.inProductionAt || issue.closedAt);
+      return d.getMonth() === targetMonth && d.getFullYear() === targetYear;
+    });
   }
 
-  const labelEl = document.getElementById('stats-month-label');
-  if (labelEl) {
-    const moduleNoticeText = targetModule ? ` for module ${targetModule.toUpperCase()}` : '';
-    labelEl.textContent = `Our engineering team stayed busy continuously improving DreamApply. Here is what was delivered in ${monthName}${moduleNoticeText}:`;
-  }
-
-  // 3. Filter dataset for current month and target module
-  const currentMonthIssues = datasetForStats.filter(issue => {
-    const d = new Date(issue.inProductionAt || issue.closedAt);
-    return d.getMonth() === targetMonth && d.getFullYear() === targetYear;
-  });
-
+  // 4. Calculate counts by category
   let countFeatures = 0;
   let countEnhancements = 0;
   let countUX = 0;
   let countBugs = 0;
 
-  currentMonthIssues.forEach(issue => {
+  issuesForStats.forEach(issue => {
     const cats = getIssueCategories(issue).map(c => c.toLowerCase().trim());
 
     cats.forEach(cat => {
@@ -176,7 +184,7 @@ function updateMonthStats() {
   const uxEl = document.getElementById('stat-ux');
   const bugEl = document.getElementById('stat-bugs');
 
-  if (totalEl) totalEl.textContent = currentMonthIssues.length;
+  if (totalEl) totalEl.textContent = issuesForStats.length;
   if (featEl) featEl.textContent = countFeatures;
   if (enhEl) enhEl.textContent = countEnhancements;
   if (uxEl) uxEl.textContent = countUX;
@@ -202,7 +210,7 @@ function normalizeCategoryGroup(catStr) {
   return 'Updates';
 }
 
-// Format date into full string: "October 12, 2026"
+// Format date into full string: "Oct 12, 2026"
 function formatFullDate(dateStr) {
   if (!dateStr) return 'Roadmap';
   const dateObj = new Date(dateStr);
