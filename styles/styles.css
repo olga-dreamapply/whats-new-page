@@ -437,5 +437,5 @@ h1 {
 }
 
 @media (max-width: 1200px) {
-  .changelog-feed::before { left: 0; background: #fff }
+  .changelog-feed::before { left: 0; background: none !important; }
 }
