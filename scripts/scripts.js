@@ -121,8 +121,17 @@ async function fetchChangelog() {
 function updateMonthStats() {
   let targetMonth, targetYear, monthName;
   
-  if (allIssues && allIssues.length > 0) {
-    const latestDate = new Date(allIssues[0].inProductionAt || allIssues[0].closedAt);
+  // 1. Filter issues by URL module parameter if present
+  const targetModule = getUrlParam('module')?.toLowerCase().trim();
+  const datasetForStats = allIssues.filter(issue => {
+    if (!targetModule) return true;
+    const issueModule = (issue.module || '').toLowerCase().trim();
+    return issueModule === targetModule;
+  });
+
+  // 2. Determine target month/year based on filtered dataset
+  if (datasetForStats && datasetForStats.length > 0) {
+    const latestDate = new Date(datasetForStats[0].inProductionAt || datasetForStats[0].closedAt);
     targetMonth = latestDate.getMonth();
     targetYear = latestDate.getFullYear();
     monthName = latestDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
@@ -135,10 +144,12 @@ function updateMonthStats() {
 
   const labelEl = document.getElementById('stats-month-label');
   if (labelEl) {
-    labelEl.textContent = `Our engineering team stayed busy continuously improving DreamApply. Here is what was delivered in ${monthName}:`;
+    const moduleNoticeText = targetModule ? ` for module ${targetModule.toUpperCase()}` : '';
+    labelEl.textContent = `Our engineering team stayed busy continuously improving DreamApply. Here is what was delivered in ${monthName}${moduleNoticeText}:`;
   }
 
-  const currentMonthIssues = allIssues.filter(issue => {
+  // 3. Filter dataset for current month and target module
+  const currentMonthIssues = datasetForStats.filter(issue => {
     const d = new Date(issue.inProductionAt || issue.closedAt);
     return d.getMonth() === targetMonth && d.getFullYear() === targetYear;
   });
