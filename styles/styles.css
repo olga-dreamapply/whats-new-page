@@ -430,8 +430,12 @@ h1 {
 
 @media (max-width: 820px) {
   .main-container { grid-template-columns: 1fr; }
-  .changelog-feed::before { left: 0; background: #fff; }
+  .changelog-feed::before { left: 0; }
   .timeline-group { grid-template-columns: 1fr; gap: 0.5rem; }
   .timeline-date { text-align: left; padding-top: 0; }
   .sidebar { position: static; }
+}
+
+@media (max-width: 1200px) {
+  .changelog-feed::before { left: 0; background: none' }
 }
