@@ -1,6 +1,17 @@
 {
   "published": [
     {
+      "id": 13,
+      "title": "A new payment gateway is now supported",
+      "module": "Finance",
+      "closedAt": "2026-10-19T07:36:09Z",
+      "inProductionAt": "2026-10-19T07:36:09Z",
+      "categories": [
+        "Feature"
+      ],
+      "resolutionText": ""
+    },
+    {
       "id": 12,
       "title": "The ability to submit applications was introduced",
       "module": "API",
