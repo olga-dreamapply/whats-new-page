@@ -259,7 +259,7 @@ h1 {
   background: var(--da-card);
   border: 1px solid var(--da-border);
   border-radius: 6px;
-  padding: 1.25rem;
+  padding: 1rem;
 }
 
 /* Module Notice Parameter Filter Banner */
