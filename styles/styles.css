@@ -328,10 +328,10 @@ h1 {
 }
 
 .stat-number {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--da-accent);
-  line-height: 1.1;
+  line-height: 1;
 }
 
 .stat-label {
